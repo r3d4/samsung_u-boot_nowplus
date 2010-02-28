@@ -136,6 +136,10 @@ enum {
 #define V_ACTIMA_165 MICRON_V_ACTIMA_165
 #define V_ACTIMB_165 MICRON_V_ACTIMB_165
 #endif
+#ifdef CONFIG_OMAP3_SAMSUNG_DDR
+#define V_ACTIMA_165 0x629db485
+#define V_ACTIMB_165 0x00022014
+#endif
 
 #if !defined(V_ACTIMA_165) || !defined(V_ACTIMB_165)
 #error "Please choose the right DDR type in config header"
