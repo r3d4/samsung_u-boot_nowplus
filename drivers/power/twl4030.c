@@ -64,7 +64,7 @@ void twl4030_power_reset_init(void)
  * Power Init
  */
 #define DEV_GRP_P1		0x20
-#define VAUX3_VSEL_28		0x03
+#define VAUX3_VSEL_18		0x01
 #define DEV_GRP_ALL		0xE0
 #define VPLL2_VSEL_18		0x05
 #define VDAC_VSEL_18		0x03
@@ -73,11 +73,11 @@ void twl4030_power_init(void)
 {
 	unsigned char byte;
 
-	/* set VAUX3 to 2.8V */
+	/* set VAUX3 to 1.8V */
 	byte = DEV_GRP_P1;
 	twl4030_i2c_write_u8(TWL4030_CHIP_PM_RECEIVER, byte,
 			     TWL4030_PM_RECEIVER_VAUX3_DEV_GRP);
-	byte = VAUX3_VSEL_28;
+	byte = VAUX3_VSEL_18;
 	twl4030_i2c_write_u8(TWL4030_CHIP_PM_RECEIVER, byte,
 			     TWL4030_PM_RECEIVER_VAUX3_DEDICATED);
 
