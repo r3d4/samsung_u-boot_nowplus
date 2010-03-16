@@ -114,10 +114,10 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(GPMC_NCS6),		(IEN | PTU | EN | M7)) \
 	MUX_VAL(CP(GPMC_NCS7),		(IEN | PTU | EN | M7)) \
 	MUX_VAL(CP(GPMC_CLK),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(GPMC_NADV_ALE),		(IEN | PTD | DIS | M0)) \
+	MUX_VAL(CP(GPMC_NADV_ALE),	(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(GPMC_NOE),		(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(GPMC_NWE),		(IEN | PTD | DIS | M0)) \
-	MUX_VAL(CP(GPMC_NBE0_CLE),		(IEN | PTD | DIS | M0)) \
+	MUX_VAL(CP(GPMC_NBE0_CLE),	(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(GPMC_NBE1),		(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(GPMC_NWP),		(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(GPMC_WAIT0),		(IEN | PTU | EN | M0)) \
@@ -154,21 +154,21 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(DSS_DATA22),		(IDIS | PTD | DIS | M0)) \
 	MUX_VAL(CP(DSS_DATA23),		(IDIS | PTD | DIS | M0)) \
 	/* Camera */ \
-	MUX_VAL(CP(CAM_HS),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(CAM_VS),		(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(CAM_HS),			(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(CAM_VS),			(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(CAM_XCLKA),		(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(CAM_PCLK),		(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(CAM_FLD),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(CAM_D0),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(CAM_D1),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(CAM_D2),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(CAM_D3),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(CAM_D4),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(CAM_D5),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(CAM_D6),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(CAM_D7),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(CAM_D8),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(CAM_D9),		(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(CAM_D0),			(IEN | PTD | EN | M7)) /* gpio_99 - LCD reg. reset */ \
+	MUX_VAL(CP(CAM_D1),			(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(CAM_D2),			(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(CAM_D3),			(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(CAM_D4),			(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(CAM_D5),			(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(CAM_D6),			(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(CAM_D7),			(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(CAM_D8),			(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(CAM_D9),			(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(CAM_D10),		(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(CAM_D11),		(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(CAM_XCLKB),		(IEN | PTD | EN | M7)) \
@@ -179,10 +179,10 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(CSI2_DX1),		(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(CSI2_DY1),		(IEN | PTD | EN | M7)) \
 	/* MCBSP2 */ \
-	MUX_VAL(CP(MCBSP2_FSX),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(MCBSP2_CLKX),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(MCBSP2_DR),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(MCBSP2_DX),		(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(MCBSP2_FSX),		(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(MCBSP2_CLKX),	(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(MCBSP2_DR),		(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(MCBSP2_DX),		(IEN | PTD | EN | M0)) \
 	/* MMC1 */ \
 	MUX_VAL(CP(MMC1_CLK),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(MMC1_CMD),		(IEN | PTU | EN | M0)) \
@@ -195,21 +195,21 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(MMC1_DAT6),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(MMC1_DAT7),		(IEN | PTU | EN | M0)) \
 	/* MMC2 */ \
-	MUX_VAL(CP(MMC2_CLK),		(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(MMC2_CLK),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(MMC2_CMD),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(MMC2_DAT0),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(MMC2_DAT1),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(MMC2_DAT2),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(MMC2_DAT3),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT4),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT5),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT6),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT7),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(MCBSP4_FSX),		(IDIS | PTD | EN | M4)) /* Movi power enable */ \
+	MUX_VAL(CP(MMC2_DAT4),		(IEN | PTU | EN | M0)) \
+	MUX_VAL(CP(MMC2_DAT5),		(IEN | PTU | EN | M0)) \
+	MUX_VAL(CP(MMC2_DAT6),		(IEN | PTU | EN | M0)) \
+	MUX_VAL(CP(MMC2_DAT7),		(IEN | PTU | EN | M0)) \
+	MUX_VAL(CP(MCBSP4_FSX),		(IDIS | PTU | EN | M4)) /* gpio_155 - moviNAND power enable */ \
 	/* MCBSP3 */ \
 	MUX_VAL(CP(MCBSP3_DX),		(IEN | PTD | EN | M4)) \
 	MUX_VAL(CP(MCBSP3_DR),		(IEN | PTD | EN | M4)) \
-	MUX_VAL(CP(MCBSP3_CLKX),		(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(MCBSP3_CLKX),	(IEN | PTD | DIS | M4)) /* gpio_xxx - touchscreen interrupt */ \
 	MUX_VAL(CP(MCBSP3_FSX),		(IEN | PTD | EN | M7)) \
 	/* UART2 */ \
 	MUX_VAL(CP(UART2_CTS),		(IEN | PTU | EN | M7)) \
@@ -220,59 +220,59 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(UART1_TX),		(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(UART1_RTS),		(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(UART1_CTS),		(IEN | PTD | EN | M4)) \
-	MUX_VAL(CP(UART1_RX),		(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(UART1_RX),		(IDIS | PTD | EN | M4)) /* gpio_151 RGB LED reset */ \
 	/* MCBSP4 */ \
-	MUX_VAL(CP(MCBSP4_CLKX),		(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(MCBSP4_CLKX),	(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(MCBSP4_DR),		(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(MCBSP4_DX),		(IEN | PTD | DIS | M4)) \
-	MUX_VAL(CP(MCBSP1_CLKR),		(IEN | PTD | DIS | M4)) \
+	MUX_VAL(CP(MCBSP1_CLKR),	(IEN | PTD | DIS | M4)) \
 	MUX_VAL(CP(MCBSP1_FSR),		(IEN | PTU | EN | M4)) \
 	MUX_VAL(CP(MCBSP1_DX),		(IEN | PTD | DIS | M4)) \
 	MUX_VAL(CP(MCBSP1_DR),		(IEN | PTD | DIS | M4)) \
 	MUX_VAL(CP(MCBSP_CLKS),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(MCBSP1_FSX),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(MCBSP1_CLKX),		(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(MCBSP1_FSX),		(IDIS| PTD | DIS | M7)) /* gpio_161 - LCD ID enable */ \
+	MUX_VAL(CP(MCBSP1_CLKX),	(IEN | PTD | EN | M7)) \
 	/* UART3 */ \
-	MUX_VAL(CP(UART3_CTS_RCTX),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(UART3_RTS_SD),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(UART3_RX_IRRX),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(UART3_TX_IRTX),		(IDIS | PTD | DIS | M0)) \
+	MUX_VAL(CP(UART3_CTS_RCTX),	(IEN | PTU | EN | M0)) \
+	MUX_VAL(CP(UART3_RTS_SD),	(IEN | PTU | EN | M0)) \
+	MUX_VAL(CP(UART3_RX_IRRX),	(IEN | PTU | EN | M0)) \
+	MUX_VAL(CP(UART3_TX_IRTX),	(IDIS | PTD | DIS | M0)) \
 	/* HSUSB */ \
 	MUX_VAL(CP(HSUSB0_CLK),		(IEN | PTD | EN | M0)) \
 	MUX_VAL(CP(HSUSB0_STP),		(IEN | PTD | EN | M0)) \
 	MUX_VAL(CP(HSUSB0_DIR),		(IEN | PTD | EN | M0)) \
 	MUX_VAL(CP(HSUSB0_NXT),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(HSUSB0_DATA0),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(HSUSB0_DATA1),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(HSUSB0_DATA2),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(HSUSB0_DATA3),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(HSUSB0_DATA4),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(HSUSB0_DATA5),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(HSUSB0_DATA6),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(HSUSB0_DATA7),		(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(HSUSB0_DATA0),	(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(HSUSB0_DATA1),	(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(HSUSB0_DATA2),	(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(HSUSB0_DATA3),	(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(HSUSB0_DATA4),	(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(HSUSB0_DATA5),	(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(HSUSB0_DATA6),	(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(HSUSB0_DATA7),	(IEN | PTD | EN | M0)) \
 	/* I2C */ \
 	MUX_VAL(CP(I2C1_SCL),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(I2C1_SDA),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(I2C2_SCL),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(I2C2_SDA),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(I2C3_SCL),		(IEN | PTU | EN | M7)) \
-	MUX_VAL(CP(I2C3_SDA),		(IEN | PTU | EN | M7)) \
-	MUX_VAL(CP(HDQ_SIO),		(IEN | PTU | EN | M4)) \
+	MUX_VAL(CP(I2C3_SCL),		(IEN | PTU | EN | M0)) \
+	MUX_VAL(CP(I2C3_SDA),		(IEN | PTU | EN | M0)) \
+	MUX_VAL(CP(HDQ_SIO),		(IDIS | PTD | DIS | M4)) /* gpio_170 - MLCD reset */ \
 	/* MCSPI */ \
 	MUX_VAL(CP(MCSPI1_CLK),		(IDIS | PTD | DIS | M0)) \
-	MUX_VAL(CP(MCSPI1_SIMO),		(IDIS | PTD | DIS | M0)) \
-	MUX_VAL(CP(MCSPI1_SOMI),		(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(MCSPI1_SIMO),	(IDIS | PTD | DIS | M0)) \
+	MUX_VAL(CP(MCSPI1_SOMI),	(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(MCSPI1_CS0),		(IDIS | PTD | DIS | M0)) \
-	MUX_VAL(CP(MCSPI1_CS1),		(IEN | PTU | EN | M7)) \
-	MUX_VAL(CP(MCSPI1_CS2),		(IEN | PTU | EN | M7)) \
-	MUX_VAL(CP(MCSPI1_CS3),		(IEN | PTU | EN | M7)) \
+	MUX_VAL(CP(MCSPI1_CS1),		(IDIS | PTU | EN | M7)) \
+	MUX_VAL(CP(MCSPI1_CS2),		(IDIS | PTU | EN | M7)) \
+	MUX_VAL(CP(MCSPI1_CS3),		(IDIS | PTU | EN | M7)) \
 	MUX_VAL(CP(MCSPI2_CLK),		(IEN | PTD | EN | M4)) \
-	MUX_VAL(CP(MCSPI2_SIMO),		(IDIS | PTD | DIS | M1)) \
-	MUX_VAL(CP(MCSPI2_SOMI),		(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(MCSPI2_SIMO),	(IDIS | PTD | DIS | M1)) \
+	MUX_VAL(CP(MCSPI2_SOMI),	(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(MCSPI2_CS0),		(IEN | PTU | EN | M7)) \
 	MUX_VAL(CP(MCSPI2_CS1),		(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(SYS_NIRQ),		(IDIS | PTD | DIS | M0)) \
-	MUX_VAL(CP(SYS_CLKOUT2),		(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(SYS_CLKOUT2),	(IEN | PTD | EN | M7)) \
 	/* D2D */ \
 	MUX_VAL(CP(D2D_MCAD0),		(IEN | PTD | EN | M0)) \
 	MUX_VAL(CP(D2D_MCAD1),		(IEN | PTD | EN | M0)) \
@@ -311,38 +311,38 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(D2D_MCAD34),		(IEN | PTD | EN | M0)) \
 	MUX_VAL(CP(D2D_MCAD35),		(IEN | PTD | EN | M0)) \
 	MUX_VAL(CP(D2D_MCAD36),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(D2D_CLK26MI),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(D2D_NRESPWRON),		(IEN | PTD | DIS | M0)) \
-	MUX_VAL(CP(D2D_NRESWARM),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(D2D_ARM9NIRQ),		(IEN | PTD | DIS | M0)) \
-	MUX_VAL(CP(D2D_UMA2P6FIQ),		(IEN | PTD | DIS | M0)) \
+	MUX_VAL(CP(D2D_CLK26MI),	(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(D2D_NRESPWRON),	(IEN | PTD | DIS | M0)) \
+	MUX_VAL(CP(D2D_NRESWARM),	(IEN | PTU | EN | M0)) \
+	MUX_VAL(CP(D2D_ARM9NIRQ),	(IEN | PTD | DIS | M0)) \
+	MUX_VAL(CP(D2D_UMA2P6FIQ),	(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(D2D_SPINT),		(IEN | PTD | EN | M0)) \
 	MUX_VAL(CP(D2D_FRINT),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(D2D_DMAREQ0),		(IEN | PTD | DIS | M0)) \
-	MUX_VAL(CP(D2D_DMAREQ1),		(IEN | PTD | DIS | M0)) \
-	MUX_VAL(CP(D2D_DMAREQ2),		(IEN | PTD | DIS | M0)) \
-	MUX_VAL(CP(D2D_DMAREQ3),		(IEN | PTD | DIS | M0)) \
-	MUX_VAL(CP(D2D_N3GTRST),		(IEN | PTD | DIS | M0)) \
+	MUX_VAL(CP(D2D_DMAREQ0),	(IEN | PTD | DIS | M0)) \
+	MUX_VAL(CP(D2D_DMAREQ1),	(IEN | PTD | DIS | M0)) \
+	MUX_VAL(CP(D2D_DMAREQ2),	(IEN | PTD | DIS | M0)) \
+	MUX_VAL(CP(D2D_DMAREQ3),	(IEN | PTD | DIS | M0)) \
+	MUX_VAL(CP(D2D_N3GTRST),	(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(D2D_N3GTDI),		(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(D2D_N3GTDO),		(IEN | PTD | EN | M0)) \
 	MUX_VAL(CP(D2D_N3GTMS),		(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(D2D_N3GTCK),		(IEN | PTD | DIS | M0)) \
-	MUX_VAL(CP(D2D_N3GRTCK),		(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(D2D_N3GRTCK),	(IEN | PTD | EN | M0)) \
 	MUX_VAL(CP(D2D_MSTDBY),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(D2D_IDLEREQ),		(IEN | PTD | DIS | M0)) \
-	MUX_VAL(CP(D2D_IDLEACK),		(IEN | PTU | EN | M0)) \
+	MUX_VAL(CP(D2D_IDLEREQ),	(IEN | PTD | DIS | M0)) \
+	MUX_VAL(CP(D2D_IDLEACK),	(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(D2D_MWRITE),		(IEN | PTD | EN | M0)) \
 	MUX_VAL(CP(D2D_SWRITE),		(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(D2D_MREAD),		(IEN | PTD | EN | M0)) \
 	MUX_VAL(CP(D2D_SREAD),		(IEN | PTD | DIS | M0)) \
-	MUX_VAL(CP(D2D_MBUSFLAG),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(D2D_SBUSFLAG),		(IEN | PTD | DIS | M0)) \
+	MUX_VAL(CP(D2D_MBUSFLAG),	(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(D2D_SBUSFLAG),	(IEN | PTD | DIS | M0)) \
 	/* SDRC clock */ \
 	MUX_VAL(CP(SDRC_CKE0),		(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(SDRC_CKE1),		(IEN | PTD | DIS | M0)) \
 	/* ETK */ \
-	MUX_VAL(CP(ETK_CLK_ES2),		(IDIS | PTD | DIS | M0)) \
-	MUX_VAL(CP(ETK_CTL_ES2),		(IEN | PTU | EN | M4)) \
+	MUX_VAL(CP(ETK_CLK_ES2),	(IDIS | PTD | DIS | M0)) \
+	MUX_VAL(CP(ETK_CTL_ES2),	(IEN | PTU | EN | M4)) \
 	MUX_VAL(CP(ETK_D0_ES2),		(IEN | PTD | DIS | M4)) \
 	MUX_VAL(CP(ETK_D1_ES2),		(IEN | PTD | DIS | M4)) \
 	MUX_VAL(CP(ETK_D2_ES2),		(IEN | PTD | DIS | M4)) \
@@ -353,10 +353,10 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(ETK_D7_ES2),		(IEN | PTD | EN | M4)) \
 	MUX_VAL(CP(ETK_D8_ES2),		(IEN | PTD | EN | M4)) \
 	MUX_VAL(CP(ETK_D9_ES2),		(IEN | PTD | DIS | M4)) \
-	MUX_VAL(CP(ETK_D10_ES2),		(IEN | PTD | EN | M4)) \
-	MUX_VAL(CP(ETK_D11_ES2),		(IEN | PTU | EN | M4)) \
-	MUX_VAL(CP(ETK_D12_ES2),		(IEN | PTD | EN | M4)) \
-	MUX_VAL(CP(ETK_D13_ES2),		(IEN | PTD | EN | M4)) \
-	MUX_VAL(CP(ETK_D14_ES2),		(IEN | PTD | EN | M4)) \
-	MUX_VAL(CP(ETK_D15_ES2),		(IEN | PTD | EN | M4))
+	MUX_VAL(CP(ETK_D10_ES2),	(IEN | PTD | EN | M4)) \
+	MUX_VAL(CP(ETK_D11_ES2),	(IEN | PTU | EN | M4)) \
+	MUX_VAL(CP(ETK_D12_ES2),	(IEN | PTD | EN | M4)) \
+	MUX_VAL(CP(ETK_D13_ES2),	(IEN | PTD | EN | M4)) \
+	MUX_VAL(CP(ETK_D14_ES2),	(IEN | PTD | EN | M4)) \
+	MUX_VAL(CP(ETK_D15_ES2),	(IEN | PTD | EN | M4))
 #endif

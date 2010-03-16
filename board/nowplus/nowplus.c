@@ -61,24 +61,32 @@ int board_init(void)
  */
 int misc_init_r(void)
 {
-	//struct gpio *gpio5_base = (struct gpio *)OMAP34XX_GPIO5_BASE;
-	//struct gpio *gpio6_base = (struct gpio *)OMAP34XX_GPIO6_BASE;
+	struct gpio *gpio4_base = (struct gpio *)OMAP34XX_GPIO4_BASE;
+	struct gpio *gpio5_base = (struct gpio *)OMAP34XX_GPIO5_BASE;
+	struct gpio *gpio6_base = (struct gpio *)OMAP34XX_GPIO6_BASE;
 
 	twl4030_power_init();
-	//twl4030_led_init();
 
 	/*
-	/ * Configure GPIOs to output * /
-	writel(~(GPIO23 | GPIO10 | GPIO8 | GPIO2 | GPIO1), &gpio6_base->oe);
-	writel(~(GPIO31 | GPIO30 | GPIO29 | GPIO28 | GPIO22 | GPIO21 |
-		GPIO15 | GPIO14 | GPIO13 | GPIO12), &gpio5_base->oe);
+	 * GPIO1:21 -> gpio_021 (WiFi IRQ)
+	 * GPIO4:03 -> gpio_099 (LCD reg. reset)
+	 * GPIO5:23 -> gpio_151 (RGB LED enable)
+	 * GPIO5:27 -> gpio_155 (moviNAND enable)
+	 * GPIO6:00 -> gpio_160 (WiFi enable)
+	 * GPIO6:01 -> gpio_161 (LCD id enable)
+	 * GPIO6:10 -> gpio_170 (MLCD reset)
+	 */
 
-	/ * Set GPIOs * /
-	writel(GPIO23 | GPIO10 | GPIO8 | GPIO2 | GPIO1,
-		&gpio6_base->setdataout);
-	writel(GPIO31 | GPIO30 | GPIO29 | GPIO28 | GPIO22 | GPIO21 |
-		GPIO15 | GPIO14 | GPIO13 | GPIO12, &gpio5_base->setdataout);
-	*/
+	/* GPIO 4 */
+	writel(~(GPIO3), &gpio4_base->oe);
+
+	/* GPIO 5 */
+	writel(~(GPIO23 | GPIO27), &gpio5_base->oe);
+	writel(GPIO27, &gpio5_base->setdataout);
+
+	/* GPIO 6 */
+	writel(~(GPIO0 | GPIO1 | GPIO10), &gpio6_base->oe);
+	//writel(GPIO10, &gpio6_base->cleardataout);
 
 	dieid_num_r();
 

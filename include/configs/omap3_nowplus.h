@@ -160,9 +160,13 @@
 	"usbtty=cdc_acm\0"\
 	"stdout=usbtty\0" \
 	"stdin=usbtty\0" \
-	"stderr=usbtty\0"
+	"stderr=usbtty\0" \
+	"bootargs=root=/dev/mmcblk0p2 rw rootdelay=1\0" \
 
-#undef CONFIG_BOOTCOMMAND
+#define CONFIG_BOOTCOMMAND \
+		"mmc init; " \
+		"fatload mmc 0:1 ${loadaddr} /uImage; " \
+		"bootm ${loadaddr}"
 
 #define CONFIG_AUTO_COMPLETE		1
 /*
