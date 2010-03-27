@@ -182,7 +182,7 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(MCBSP2_FSX),		(IEN | PTD | EN | M0)) \
 	MUX_VAL(CP(MCBSP2_CLKX),	(IEN | PTD | EN | M0)) \
 	MUX_VAL(CP(MCBSP2_DR),		(IEN | PTD | EN | M0)) \
-	MUX_VAL(CP(MCBSP2_DX),		(IEN | PTD | EN | M0)) \
+	MUX_VAL(CP(MCBSP2_DX),		(IDIS | PTD | DIS | M0)) \
 	/* MMC1 */ \
 	MUX_VAL(CP(MMC1_CLK),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(MMC1_CMD),		(IEN | PTU | EN | M0)) \
@@ -201,10 +201,14 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(MMC2_DAT1),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(MMC2_DAT2),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(MMC2_DAT3),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT4),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT5),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT6),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT7),		(IEN | PTU | EN | M0)) \
+	/* MMC3 */ \
+	MUX_VAL(CP(MMC2_DAT4),		(IEN | PTU | EN | M3)) \
+	MUX_VAL(CP(MMC2_DAT5),		(IEN | PTU | EN | M3)) \
+	MUX_VAL(CP(MMC2_DAT6),		(IEN | PTU | EN | M3)) \
+	MUX_VAL(CP(MMC2_DAT7),		(IEN | PTU | EN | M3)) \
+	MUX_VAL(CP(MCSPI1_CS1),		(IEN | PTU | EN | M3)) \
+	MUX_VAL(CP(MCSPI1_CS2),		(IEN | PTU | EN | M3)) \
+	/* moviNAND */ \
 	MUX_VAL(CP(MCBSP4_FSX),		(IDIS | PTU | EN | M4)) /* gpio_155 - moviNAND power enable */ \
 	/* MCBSP3 */ \
 	MUX_VAL(CP(MCBSP3_DX),		(IEN | PTD | EN | M4)) \
@@ -229,8 +233,8 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(MCBSP1_FSR),		(IEN | PTU | EN | M4)) \
 	MUX_VAL(CP(MCBSP1_DX),		(IEN | PTD | DIS | M4)) \
 	MUX_VAL(CP(MCBSP1_DR),		(IEN | PTD | DIS | M4)) \
-	MUX_VAL(CP(MCBSP_CLKS),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(MCBSP1_FSX),		(IDIS| PTD | DIS | M7)) /* gpio_161 - LCD ID enable */ \
+	MUX_VAL(CP(MCBSP_CLKS),		(IDIS | PTD | DIS | M4)) /* gpio_160 - WiFi enable */ \
+	MUX_VAL(CP(MCBSP1_FSX),		(IDIS| PTD | DIS | M4)) /* gpio_161 - LCD ID enable */ \
 	MUX_VAL(CP(MCBSP1_CLKX),	(IEN | PTD | EN | M7)) \
 	/* UART3 */ \
 	MUX_VAL(CP(UART3_CTS_RCTX),	(IEN | PTU | EN | M0)) \
@@ -263,8 +267,6 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(MCSPI1_SIMO),	(IDIS | PTD | DIS | M0)) \
 	MUX_VAL(CP(MCSPI1_SOMI),	(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(MCSPI1_CS0),		(IDIS | PTD | DIS | M0)) \
-	MUX_VAL(CP(MCSPI1_CS1),		(IDIS | PTU | EN | M7)) \
-	MUX_VAL(CP(MCSPI1_CS2),		(IDIS | PTU | EN | M7)) \
 	MUX_VAL(CP(MCSPI1_CS3),		(IDIS | PTU | EN | M7)) \
 	MUX_VAL(CP(MCSPI2_CLK),		(IEN | PTD | EN | M4)) \
 	MUX_VAL(CP(MCSPI2_SIMO),	(IDIS | PTD | DIS | M1)) \
@@ -350,8 +352,8 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(ETK_D4_ES2),		(IEN | PTD | EN | M4)) \
 	MUX_VAL(CP(ETK_D5_ES2),		(IEN | PTD | EN | M4)) \
 	MUX_VAL(CP(ETK_D6_ES2),		(IEN | PTD | EN | M4)) \
-	MUX_VAL(CP(ETK_D7_ES2),		(IEN | PTD | EN | M4)) \
-	MUX_VAL(CP(ETK_D8_ES2),		(IEN | PTD | EN | M4)) \
+	MUX_VAL(CP(ETK_D7_ES2),		(IEN | PTU | EN | M4)) /* gpio 21 - WiFi IRQ */ \
+	MUX_VAL(CP(ETK_D8_ES2),		(IDIS | PTD | EN | M4)) /* gpio 22 - TWL5030 MSECURE */ \
 	MUX_VAL(CP(ETK_D9_ES2),		(IEN | PTD | DIS | M4)) \
 	MUX_VAL(CP(ETK_D10_ES2),	(IEN | PTD | EN | M4)) \
 	MUX_VAL(CP(ETK_D11_ES2),	(IEN | PTU | EN | M4)) \
