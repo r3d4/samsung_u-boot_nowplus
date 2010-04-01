@@ -201,11 +201,15 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(MMC2_DAT1),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(MMC2_DAT2),		(IEN | PTU | EN | M0)) \
 	MUX_VAL(CP(MMC2_DAT3),		(IEN | PTU | EN | M0)) \
+	MUX_VAL(CP(MMC2_DAT4),		(IEN | PTU | EN | M7)) \
+	MUX_VAL(CP(MMC2_DAT5),		(IEN | PTU | EN | M7)) \
+	MUX_VAL(CP(MMC2_DAT6),		(IEN | PTU | EN | M7)) \
+	MUX_VAL(CP(MMC2_DAT7),		(IEN | PTU | EN | M7)) \
 	/* MMC3 */ \
-	MUX_VAL(CP(MMC2_DAT4),		(IEN | PTU | EN | M3)) \
-	MUX_VAL(CP(MMC2_DAT5),		(IEN | PTU | EN | M3)) \
-	MUX_VAL(CP(MMC2_DAT6),		(IEN | PTU | EN | M3)) \
-	MUX_VAL(CP(MMC2_DAT7),		(IEN | PTU | EN | M3)) \
+	MUX_VAL(CP(ETK_D3_ES2),		(IEN | PTU | EN | M2)) \
+	MUX_VAL(CP(ETK_D4_ES2),		(IEN | PTU | EN | M2)) \
+	MUX_VAL(CP(ETK_D5_ES2),		(IEN | PTU | EN | M2)) \
+	MUX_VAL(CP(ETK_D6_ES2),		(IEN | PTU | EN | M2)) \
 	MUX_VAL(CP(MCSPI1_CS1),		(IEN | PTU | EN | M3)) \
 	MUX_VAL(CP(MCSPI1_CS2),		(IEN | PTU | EN | M3)) \
 	/* moviNAND */ \
@@ -214,7 +218,7 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(MCBSP3_DX),		(IEN | PTD | EN | M4)) \
 	MUX_VAL(CP(MCBSP3_DR),		(IEN | PTD | EN | M4)) \
 	MUX_VAL(CP(MCBSP3_CLKX),	(IEN | PTD | DIS | M4)) /* gpio_xxx - touchscreen interrupt */ \
-	MUX_VAL(CP(MCBSP3_FSX),		(IEN | PTD | EN | M7)) \
+	MUX_VAL(CP(MCBSP3_FSX),		(IDIS | PTD | DIS | M4)) /* gpio_143 - BT_EN */ \
 	/* UART2 */ \
 	MUX_VAL(CP(UART2_CTS),		(IEN | PTU | EN | M7)) \
 	MUX_VAL(CP(UART2_RTS),		(IEN | PTU | EN | M7)) \
@@ -348,11 +352,7 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(ETK_D0_ES2),		(IEN | PTD | DIS | M4)) \
 	MUX_VAL(CP(ETK_D1_ES2),		(IEN | PTD | DIS | M4)) \
 	MUX_VAL(CP(ETK_D2_ES2),		(IEN | PTD | DIS | M4)) \
-	MUX_VAL(CP(ETK_D3_ES2),		(IEN | PTU | EN | M4)) \
-	MUX_VAL(CP(ETK_D4_ES2),		(IEN | PTD | EN | M4)) \
-	MUX_VAL(CP(ETK_D5_ES2),		(IEN | PTD | EN | M4)) \
-	MUX_VAL(CP(ETK_D6_ES2),		(IEN | PTD | EN | M4)) \
-	MUX_VAL(CP(ETK_D7_ES2),		(IEN | PTU | EN | M4)) /* gpio 21 - WiFi IRQ */ \
+	MUX_VAL(CP(ETK_D7_ES2),		(IEN | PTD | EN | M4)) /* gpio 21 - WiFi IRQ */ \
 	MUX_VAL(CP(ETK_D8_ES2),		(IDIS | PTD | EN | M4)) /* gpio 22 - TWL5030 MSECURE */ \
 	MUX_VAL(CP(ETK_D9_ES2),		(IEN | PTD | DIS | M4)) \
 	MUX_VAL(CP(ETK_D10_ES2),	(IEN | PTD | EN | M4)) \
