@@ -152,7 +152,7 @@
 #define CONFIG_TWL4030_LED		1
 
 /* Environment information */
-#define CONFIG_BOOTDELAY		-1
+#define CONFIG_BOOTDELAY		0
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"loadaddr=0x82000000\0" \
@@ -161,13 +161,18 @@
 	"stdout=usbtty\0" \
 	"stdin=usbtty\0" \
 	"stderr=usbtty\0" \
-	"bootargs=root=/dev/mmcblk0p2 rw rootdelay=1\0" \
-
-#define CONFIG_BOOTCOMMAND \
+	"bootargs=root=/dev/mmcblk0p2 rw init=/init rootdelay=1 rootfstype=ext3 rootwait debug\0" \
+	
+// video=omapfb:vram:2M,vram:4M
+/*#define CONFIG_BOOTCOMMAND \
 		"mmc init; " \
 		"fatload mmc 0:1 ${loadaddr} /uImage; " \
 		"bootm ${loadaddr}"
+*/
 
+#define CONFIG_BOOTCOMMAND \
+		"bootm 0x86C30000"
+		
 #define CONFIG_AUTO_COMPLETE		1
 /*
  * Miscellaneous configurable options
