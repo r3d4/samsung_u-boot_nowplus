@@ -62,6 +62,7 @@ int board_init(void)
 int misc_init_r(void)
 {
 	struct gpio *gpio1_base = (struct gpio *)OMAP34XX_GPIO1_BASE;
+	struct gpio *gpio3_base = (struct gpio *)OMAP34XX_GPIO4_BASE;
 	struct gpio *gpio4_base = (struct gpio *)OMAP34XX_GPIO4_BASE;
 	struct gpio *gpio5_base = (struct gpio *)OMAP34XX_GPIO5_BASE;
 	struct gpio *gpio6_base = (struct gpio *)OMAP34XX_GPIO6_BASE;
@@ -70,7 +71,8 @@ int misc_init_r(void)
 
 	/*
 	 * GPIO1:21 -> gpio_021 (WiFi IRQ)
-	 * GPIO1:22 -> gpio_022 (TWL5030 MSECURE)
+	 * GPIO1:22 -> gpio_022 (TWL5030 MSECURE)]
+	 * GPIO3:01 -> gpio_065 (Si4709 enable)
 	 * GPIO4:03 -> gpio_099 (LCD reg. reset)
 	 * GPIO5:23 -> gpio_151 (RGB LED enable)
 	 * GPIO5:27 -> gpio_155 (moviNAND enable)
@@ -83,6 +85,9 @@ int misc_init_r(void)
 	writel(~(GPIO22), &gpio1_base->oe);
 	writel(GPIO22, &gpio1_base->setdataout);
 
+	/* GPIO 3 */
+	writel(~(GPIO1), &gpio3_base->oe);
+	writel(GPIO1, &gpio3_base->setdataout);
 	/* GPIO 4 */
 	writel(~(GPIO3), &gpio4_base->oe);
 
@@ -92,7 +97,7 @@ int misc_init_r(void)
 
 	/* GPIO 6 */
 	writel(~(GPIO0 | GPIO1 | GPIO10), &gpio6_base->oe);
-	writel(GPIO0, &gpio6_base->setdataout);
+	//writel(GPIO0, &gpio6_base->setdataout);
 	//writel(GPIO10, &gpio6_base->cleardataout);
 
 	dieid_num_r();
