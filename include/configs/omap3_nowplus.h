@@ -161,7 +161,7 @@
 	"stdout=usbtty\0" \
 	"stdin=usbtty\0" \
 	"stderr=usbtty\0" \
-	"bootargs=root=/dev/mmcblk0p2 rw init=/init rootdelay=1 rootfstype=ext3 rootwait debug\0" \
+	//"bootargs=root=/dev/mmcblk0p2 rw init=/init rootdelay=1 rootfstype=ext3 rootwait debug\0" \
 	
 // video=omapfb:vram:2M,vram:4M
 /*#define CONFIG_BOOTCOMMAND \
