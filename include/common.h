@@ -743,6 +743,13 @@ void	clear_ctrlc (void);	/* clear the Control-C condition */
 int	disable_ctrlc (int);	/* 1 to disable, 0 to enable Control-C detect */
 
 /*
+ * ANSI terminal
+ */
+
+#define ANSI_CURSOR_POSITION		"\e[%d;%dH"
+#define ANSI_CLEAR_CONSOLE		"\e[2J"
+
+/*
  * STDIO based functions (can always be used)
  */
 /* serial stuff */
