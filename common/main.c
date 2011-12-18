@@ -397,6 +397,10 @@ void main_loop (void)
 #endif /* CONFIG_MENUKEY */
 #endif /* CONFIG_BOOTDELAY */
 
+	s = getenv("premonitor");
+	if (s)
+		run_command(s, 0);
+
 	/*
 	 * Main Loop for Monitor Command Processing
 	 */
