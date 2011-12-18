@@ -683,6 +683,57 @@ static void memcpyl(int *d, int *s, int c)
 }
 #endif
 
+static void console_clear(void)
+{
+#ifdef VIDEO_HW_RECTFILL
+	video_hw_rectfill(VIDEO_PIXEL_SIZE,	/* bytes per pixel */
+			  0,			/* dest pos x */
+			  video_logo_height,	/* dest pos y */
+			  VIDEO_VISIBLE_COLS,	/* frame width */
+			  VIDEO_VISIBLE_ROWS,	/* frame height */
+			  bgx			/* fill color */
+	);
+#else
+	memsetl(CONSOLE_ROW_FIRST, CONSOLE_SIZE, bgx);
+#endif
+}
+
+static void console_clear_line(int line, int begin, int end)
+{
+#ifdef VIDEO_HW_RECTFILL
+	video_hw_rectfill(VIDEO_PIXEL_SIZE,		/* bytes per pixel */
+			  /* FIXME: correct? */
+			  VIDEO_FONT_WIDTH * begin,	/* dest pos x */
+			  /* FIXME: correct? */
+			  video_logo_height +
+			  CONSOLE_ROW_SIZE * line,	/* dest pos y */
+			  /* FIXME: correct? */
+			  VIDEO_FONT_WIDTH * (end - begin), /* frame width */
+			  VIDEO_FONT_HEIGHT,		/* frame height */
+			  bgx				/* fill color */
+		);
+#else
+	int i;
+	if (begin == 0 && end == CONSOLE_COLS)
+		memsetl(CONSOLE_ROW_FIRST +
+			CONSOLE_ROW_SIZE * line,	/* offset of row */
+			CONSOLE_ROW_SIZE >> 2,		/* length of row */
+			bgx				/* fill color */
+		);
+	else
+		for (i = 0; i < VIDEO_FONT_HEIGHT; ++i)
+			memsetl(CONSOLE_ROW_FIRST +
+				CONSOLE_ROW_SIZE * line + /* offset of row */
+				VIDEO_FONT_WIDTH *
+				VIDEO_PIXEL_SIZE * begin + /* offset of col */
+				i * VIDEO_LINE_LEN, /* col offset of i line */
+				(VIDEO_FONT_WIDTH * VIDEO_PIXEL_SIZE *
+				(end - begin + 1)) >> 2, /* length to end */
+				bgx			/* fill color */
+				);
+#endif
+}
+
 static void console_scrollup(void)
 {
 	/* copy up rows ignoring the first one */
@@ -705,18 +756,7 @@ static void console_scrollup(void)
 #endif
 
 	/* clear the last one */
-#ifdef VIDEO_HW_RECTFILL
-	video_hw_rectfill(VIDEO_PIXEL_SIZE,	/* bytes per pixel */
-			  0,			/* dest pos x */
-			  VIDEO_VISIBLE_ROWS
-			  - VIDEO_FONT_HEIGHT,	/* dest pos y */
-			  VIDEO_VISIBLE_COLS,	/* frame width */
-			  VIDEO_FONT_HEIGHT,	/* frame height */
-			  CONSOLE_BG_COL	/* fill color */
-		);
-#else
-	memsetl(CONSOLE_ROW_LAST, CONSOLE_ROW_SIZE >> 2, CONSOLE_BG_COL);
-#endif
+	console_clear_line(CONSOLE_ROWS-1, 0, CONSOLE_COLS);
 }
 
 static void console_back(void)
