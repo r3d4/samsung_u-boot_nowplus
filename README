@@ -3687,6 +3687,8 @@ Some configuration options can be set using Environment Variables.
 
 List of environment variables (most likely not complete):
 
+  atagaddr	- bootm will use ATAGs struct from specified address (arm only)
+
   baudrate	- see CONFIG_BAUDRATE
 
   bootdelay	- see CONFIG_BOOTDELAY

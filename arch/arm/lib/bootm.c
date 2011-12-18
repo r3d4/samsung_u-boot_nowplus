@@ -42,6 +42,10 @@ DECLARE_GLOBAL_DATA_PTR;
 	defined(CONFIG_INITRD_TAG) || \
 	defined(CONFIG_SERIAL_TAG) || \
 	defined(CONFIG_REVISION_TAG)
+		#define CONFIG_SETUP_ANY_TAG
+#endif
+
+#ifdef CONFIG_SETUP_ANY_TAG
 static struct tag *params;
 #endif
 
@@ -106,11 +110,7 @@ static void announce_and_cleanup(void)
 	cleanup_before_linux();
 }
 
-#if defined(CONFIG_SETUP_MEMORY_TAGS) || \
-	defined(CONFIG_CMDLINE_TAG) || \
-	defined(CONFIG_INITRD_TAG) || \
-	defined(CONFIG_SERIAL_TAG) || \
-	defined(CONFIG_REVISION_TAG)
+#ifdef CONFIG_SETUP_ANY_TAG
 static void setup_start_tag (bd_t *bd)
 {
 	params = (struct tag *)bd->bi_boot_params;
@@ -217,11 +217,7 @@ void setup_revision_tag(struct tag **in_params)
 }
 #endif
 
-#if defined(CONFIG_SETUP_MEMORY_TAGS) || \
-	defined(CONFIG_CMDLINE_TAG) || \
-	defined(CONFIG_INITRD_TAG) || \
-	defined(CONFIG_SERIAL_TAG) || \
-	defined(CONFIG_REVISION_TAG)
+#ifdef CONFIG_SETUP_ANY_TAG
 static void setup_end_tag(bd_t *bd)
 {
 	params->hdr.tag = ATAG_NONE;
@@ -280,13 +276,23 @@ static void boot_prep_linux(bootm_headers_t *images)
 	} else
 #endif
 	{
-#if defined(CONFIG_SETUP_MEMORY_TAGS) || \
-	defined(CONFIG_CMDLINE_TAG) || \
-	defined(CONFIG_INITRD_TAG) || \
-	defined(CONFIG_SERIAL_TAG) || \
-	defined(CONFIG_REVISION_TAG)
+		char *atagaddr = getenv("atagaddr");
 		debug("using: ATAGS\n");
-		setup_start_tag(gd->bd);
+
+		if (atagaddr)
+			gd->bd->bi_boot_params = simple_strtoul(atagaddr, NULL, 16);
+
+		if (gd->bd->bi_boot_params) {
+			printf("Using existing atags at %#lx\n", gd->bd->bi_boot_params);
+
+			params = (struct tag *) gd->bd->bi_boot_params;
+			while (params->hdr.size > 0)
+				params = tag_next(params);
+		} else {
+#ifdef CONFIG_SETUP_ANY_TAG
+			setup_start_tag(gd->bd);
+#endif
+		}
 #ifdef CONFIG_SERIAL_TAG
 		setup_serial_tag(&params);
 #endif
@@ -297,18 +303,28 @@ static void boot_prep_linux(bootm_headers_t *images)
 		setup_revision_tag(&params);
 #endif
 #ifdef CONFIG_SETUP_MEMORY_TAGS
-		setup_memory_tags(gd->bd);
+		if (!atagaddr)
+			setup_memory_tags(gd->bd);
 #endif
 #ifdef CONFIG_INITRD_TAG
 		if (images->rd_start && images->rd_end)
 			setup_initrd_tag(gd->bd, images->rd_start,
 			images->rd_end);
 #endif
-		setup_end_tag(gd->bd);
-#else /* all tags */
-		printf("FDT and ATAGS support not compiled in - hanging\n");
-		hang();
-#endif /* all tags */
+		if (atagaddr) {
+			if (params->hdr.size > 0)
+				setup_end_tag(gd->bd);
+		} else {
+#ifdef CONFIG_SETUP_ANY_TAG
+			setup_end_tag(gd->bd);
+#endif
+		}
+#ifndef CONFIG_SETUP_ANY_TAG
+		if (!atagaddr) {
+			printf("FDT and ATAGS support not compiled in - hanging\n");
+			hang();
+		}
+#endif
 	}
 }
 
