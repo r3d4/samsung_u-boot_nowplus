@@ -771,9 +771,54 @@ static void console_back(void)
 	}
 }
 
-static void console_newline(void)
+static void console_cursor_fix(void)
 {
-	console_row++;
+	if (console_row < 0)
+		console_row = 0;
+	if (console_row >= CONSOLE_ROWS)
+		console_row = CONSOLE_ROWS-1;
+	if (console_col < 0)
+		console_col = 0;
+	if (console_col >= CONSOLE_COLS)
+		console_col = CONSOLE_COLS-1;
+}
+
+static void console_cursor_up(int n)
+{
+	console_row -= n;
+	console_cursor_fix();
+}
+
+static void console_cursor_down(int n)
+{
+	console_row += n;
+	console_cursor_fix();
+}
+
+static void console_cursor_left(int n)
+{
+	console_col -= n;
+	console_cursor_fix();
+}
+
+static void console_cursor_right(int n)
+{
+	console_col += n;
+	console_cursor_fix();
+}
+
+static void console_cursor_set_position(int row, int col)
+{
+	if (console_row != -1)
+		console_row = row;
+	if (console_col != -1)
+		console_col = col;
+	console_cursor_fix();
+}
+
+static void console_newline(int n)
+{
+	console_row += n;
 	console_col = 0;
 
 	/* Check if we need to scroll the terminal */
@@ -782,8 +827,15 @@ static void console_newline(void)
 		console_scrollup();
 
 		/* Decrement row number */
-		console_row--;
+		console_row = CONSOLE_ROWS-1;
 	}
+}
+
+static void console_previewsline(int n)
+{
+	/* FIXME: also scroll terminal ? */
+	console_row -= n;
+	console_cursor_fix();
 }
 
 static void console_cr(void)
@@ -804,7 +856,7 @@ void video_putc(const char c)
 
 	case '\n':		/* next line */
 		if (console_col || (!console_col && nl))
-			console_newline();
+			console_newline(1);
 		nl = 1;
 		break;
 
@@ -813,7 +865,7 @@ void video_putc(const char c)
 		console_col &= ~0x0007;
 
 		if (console_col >= CONSOLE_COLS)
-			console_newline();
+			console_newline(1);
 		break;
 
 	case 8:		/* backspace */
@@ -827,7 +879,7 @@ void video_putc(const char c)
 
 		/* check for newline */
 		if (console_col >= CONSOLE_COLS) {
-			console_newline();
+			console_newline(1);
 			nl = 0;
 		}
 	}
