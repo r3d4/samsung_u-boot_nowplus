@@ -83,6 +83,20 @@ int do_mdm_init = 0;
 extern void mdm_init(void); /* defined in board.c */
 #endif
 
+#if defined(CONFIG_MENUKEY) && !defined(CONFIG_MENUCMD) && \
+(!defined(CONFIG_BOOTDELAY) || CONFIG_BOOTDELAY < 0)
+#error CONFIG_MENUKEY defined, but not CONFIG_MENUCMD or CONFIG_BOOTDELAY >= 0
+#error define CONFIG_MENUCMD and CONFIG_BOOTDELAY too
+#endif
+
+#ifdef CONFIG_MENUCMD
+# ifdef CONFIG_MENUKEY
+static int menucmd;
+# else
+static int menucmd = 1;
+# endif
+#endif
+
 /***************************************************************************
  * Watch for 'delay' seconds for autoboot stop or autoboot delay string.
  * returns: 0 -  no key string, allow autoboot 1 - got key string, abort
@@ -202,10 +216,6 @@ int abortboot(int bootdelay)
 
 # else	/* !defined(CONFIG_AUTOBOOT_KEYED) */
 
-#ifdef CONFIG_MENUKEY
-static int menukey = 0;
-#endif
-
 #ifndef CONFIG_MENU
 static inline
 #endif
@@ -242,8 +252,10 @@ int abortboot(int bootdelay)
 			if (tstc()) {	/* we got a key press	*/
 				abort  = 1;	/* don't auto boot	*/
 				bootdelay = 0;	/* no more delay	*/
-# ifdef CONFIG_MENUKEY
-				menukey = getc();
+# if defined(CONFIG_MENUCMD) && defined(CONFIG_MENUKEY)
+				if (CONFIG_MENUKEY == 0 ||
+					CONFIG_MENUKEY == getc())
+					menucmd = 1;
 # else
 				(void) getc();  /* consume input	*/
 # endif
@@ -271,6 +283,7 @@ int abortboot(int bootdelay)
 
 void main_loop (void)
 {
+	char *s;
 #ifndef CONFIG_SYS_HUSH_PARSER
 	static char lastcommand[CONFIG_SYS_CBSIZE] = { 0, };
 	int len;
@@ -279,7 +292,6 @@ void main_loop (void)
 #endif
 
 #if defined(CONFIG_BOOTDELAY) && (CONFIG_BOOTDELAY >= 0)
-	char *s;
 	int bootdelay;
 #endif
 #ifdef CONFIG_PREBOOT
@@ -388,14 +400,15 @@ void main_loop (void)
 # endif
 	}
 
-# ifdef CONFIG_MENUKEY
-	if (menukey == CONFIG_MENUKEY) {
+#endif /* CONFIG_BOOTDELAY */
+
+#ifdef CONFIG_MENUCMD
+	if (menucmd == 1) {
 		s = getenv("menucmd");
 		if (s)
 			run_command(s, 0);
 	}
-#endif /* CONFIG_MENUKEY */
-#endif /* CONFIG_BOOTDELAY */
+#endif
 
 	s = getenv("premonitor");
 	if (s)
