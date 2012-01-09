@@ -27,6 +27,7 @@
 #include <common.h>
 #include <config.h>
 #include <ext2fs.h>
+#include <ext_common.h>
 
 static block_dev_desc_t *ext2fs_block_dev_desc;
 static disk_partition_t part_info;
