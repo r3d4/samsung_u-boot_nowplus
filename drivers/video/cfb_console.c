@@ -886,6 +886,9 @@ static void parse_putc(const char c)
 		console_back();
 		break;
 
+	case 7:		/* bell */
+		break;	/* ignored */
+
 	default:		/* draw the char */
 		video_putchar(console_col * VIDEO_FONT_WIDTH,
 			      console_row * VIDEO_FONT_HEIGHT, c);
