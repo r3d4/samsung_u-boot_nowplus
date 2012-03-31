@@ -28,7 +28,11 @@ const omap3_sysinfo sysinfo = {
 	"OMAP3 Nowplus board",
 	"OneNAND",
 };
+#define GPIO161				(0x1 << 1)
+#define GPIO170				(0x1 << 10)
 
+#define OFF_IN_PD	0
+#define OFF_OUT_PD	0
 /*
  * IEN  - Input Enable
  * IDIS - Input Disable
@@ -39,6 +43,7 @@ const omap3_sysinfo sysinfo = {
  * M0   - Mode 0
  * The commented string gives the final mux configuration for that pin
  */
+ 
 #define MUX_NOWPLUS() \
 	MUX_VAL(CP(SDRC_D0),		(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(SDRC_D1),		(IEN | PTD | DIS | M0)) \
@@ -188,16 +193,16 @@ const omap3_sysinfo sysinfo = {
 	MUX_VAL(CP(MMC1_DAT5),		(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(MMC1_DAT6),		(IEN | PTD | EN | M7)) \
 	MUX_VAL(CP(MMC1_DAT7),		(IEN | PTD | EN | M7)) \
-	MUX_VAL(CP(MMC2_CLK),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(MMC2_CMD),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT0),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT1),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT2),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT3),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT4),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT5),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT6),		(IEN | PTU | EN | M0)) \
-	MUX_VAL(CP(MMC2_DAT7),		(IEN | PTU | EN | M0)) \
+	MUX_VAL(CP(MMC2_CLK),		(M7)) \
+	MUX_VAL(CP(MMC2_CMD),		(M7)) \
+	MUX_VAL(CP(MMC2_DAT0),		(M7)) \
+	MUX_VAL(CP(MMC2_DAT1),		(M7)) \
+	MUX_VAL(CP(MMC2_DAT2),		(M7)) \
+	MUX_VAL(CP(MMC2_DAT3),		(M7)) \
+	MUX_VAL(CP(MMC2_DAT4),		(M7)) \
+	MUX_VAL(CP(MMC2_DAT5),		(M7)) \
+	MUX_VAL(CP(MMC2_DAT6),		(M7)) \
+	MUX_VAL(CP(MMC2_DAT7),		(M7)) \
 	MUX_VAL(CP(MCBSP3_DX),		(IEN | PTD | EN | M4)) \
 	MUX_VAL(CP(MCBSP3_DR),		(IEN | PTD | EN | M4)) \
 	MUX_VAL(CP(MCBSP3_CLKX),		(IEN | PTU | EN | M4)) \

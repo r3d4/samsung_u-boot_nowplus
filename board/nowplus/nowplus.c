@@ -46,7 +46,8 @@ int board_init(void)
 {
 	DECLARE_GLOBAL_DATA_PTR;
 
-	gpmc_init(); /* in SRAM or SDRAM, finish GPMC */
+	
+	//gpmc_init(); // already done by samsung bootloader /* in SRAM or SDRAM, finish GPMC */
 	/* board id for Linux */
 	gd->bd->bi_arch_number = 1641;
 	/* boot param addr */
@@ -67,8 +68,20 @@ int misc_init_r(void)
 	struct gpio *gpio5_base = (struct gpio *)OMAP34XX_GPIO5_BASE;
 	struct gpio *gpio6_base = (struct gpio *)OMAP34XX_GPIO6_BASE;
 
+#if 0  //done by sec bootloader
+	// in drivers\power\twl4030.c
 	twl4030_power_init();
+	
+	//LCD reset
+	writel(~(GPIO170), &gpio1_base->setdataout);	// lo
+	writel(~(GPIO170), &gpio1_base->oe);	//output
 
+	
+	// LCD disable
+	writel(~(GPIO161), &gpio1_base->oe);	//output
+	writel(~(GPIO161), &gpio1_base->setdataout);	// lo
+#endif	
+#if 0	//done at kernel
 	/*
 	 * GPIO1:21 -> gpio_021 (WiFi IRQ)
 	 * GPIO1:22 -> gpio_022 (TWL5030 MSECURE)]
@@ -99,7 +112,7 @@ int misc_init_r(void)
 	writel(~(GPIO0 | GPIO1 | GPIO10), &gpio6_base->oe);
 	//writel(GPIO0, &gpio6_base->setdataout);
 	//writel(GPIO10, &gpio6_base->cleardataout);
-
+#endif 
 	dieid_num_r();
 
 	return 0;
@@ -113,5 +126,6 @@ int misc_init_r(void)
  */
 void set_muxconf_regs(void)
 {
-	MUX_NOWPLUS();
+////done by sec bootloader
+	//MUX_NOWPLUS();
 }
