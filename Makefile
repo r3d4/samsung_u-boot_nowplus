@@ -753,9 +753,9 @@ tidy:	clean
 	@find $(OBJTREE) -type f \( -name '*.depend*' \) -print | xargs rm -f
 
 clobber:	tidy
-	@find $(OBJTREE) -type f \( -name '*.srec' \
-		-o -name '*.bin' -o -name u-boot.img \) \
-		-print0 | xargs -0 rm -f
+#	@find $(OBJTREE) -type f \( -name '*.srec' \
+#		-o -name '*.bin' -o -name u-boot.img \) \
+#		-print0 | xargs -0 rm -f
 	@rm -f $(OBJS) $(obj)*.bak $(obj)ctags $(obj)etags $(obj)TAGS \
 		$(obj)cscope.* $(obj)*.*~
 	@rm -f $(obj)u-boot $(obj)u-boot.map $(obj)u-boot.hex $(ALL-y)
