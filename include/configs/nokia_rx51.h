@@ -140,6 +140,7 @@
 #include <config_cmd_default.h>
 
 #define CONFIG_CMD_EXT2			/* EXT2 Support */
+#define CONFIG_CMD_EXT4			/* EXT4 Support */
 #define CONFIG_CMD_FAT			/* FAT support */
 
 #define CONFIG_CMD_I2C			/* I2C serial bus support */
@@ -289,6 +290,8 @@ int rx51_kp_getc(void);
 			"setenv mmctype fat;" \
 			"run trymmcallpartboot;" \
 			"setenv mmctype ext2;" \
+			"run trymmcallpartboot;" \
+			"setenv mmctype ext4;" \
 			"run trymmcallpartboot;" \
 		"fi\0" \
 	"emmcboot=setenv mmcnum 1; run trymmcboot\0" \
