@@ -360,6 +360,8 @@ void console_cursor(int state);
 extern void video_get_info_str(int line_number,	char *info);
 #endif
 
+DECLARE_GLOBAL_DATA_PTR;
+
 /* Locals */
 static GraphicDevice *pGD;	/* Pointer to Graphic array */
 
@@ -381,6 +383,8 @@ static char ansi_buf[10] = { 0, };
 static int ansi_buf_size;
 static int ansi_colors_need_revert;
 static int ansi_cursor_hidden;
+
+static int cfb_do_flush_cache;
 
 static const int video_font_draw_table8[] = {
 	0x00000000, 0x000000ff, 0x0000ff00, 0x0000ffff,
@@ -558,6 +562,8 @@ static void video_drawchars(int xx, int yy, unsigned char *s, int count)
 					SWAP32((video_font_draw_table32
 						[bits & 15][3] & eorx) ^ bgx);
 			}
+			if (cfb_do_flush_cache)
+				flush_cache((ulong)dest0, 32);
 			dest0 += VIDEO_FONT_WIDTH * VIDEO_PIXEL_SIZE;
 			s++;
 		}
@@ -634,6 +640,8 @@ static void video_invertchar(int xx, int yy)
 		for (x = firstx; x < lastx; x++) {
 			u8 *dest = (u8 *)(video_fb_address) + x + y;
 			*dest = ~*dest;
+			if (cfb_do_flush_cache)
+				flush_cache((ulong)dest, 4);
 		}
 	}
 }
@@ -709,6 +717,8 @@ static void console_clear(void)
 #else
 	memsetl(CONSOLE_ROW_FIRST, CONSOLE_SIZE, bgx);
 #endif
+	if (cfb_do_flush_cache)
+		flush_cache((ulong)CONSOLE_ROW_FIRST, CONSOLE_SIZE);
 }
 
 static void console_clear_line(int line, int begin, int end)
@@ -745,6 +755,8 @@ static void console_clear_line(int line, int begin, int end)
 				bgx			/* fill color */
 				);
 #endif
+	if (cfb_do_flush_cache)
+		flush_cache((ulong)CONSOLE_ROW_FIRST, CONSOLE_SIZE);
 }
 
 static void console_scrollup(void)
@@ -1972,6 +1984,29 @@ static void *video_logo(void)
 }
 #endif
 
+static int cfb_fb_is_in_dram(void)
+{
+	bd_t *bd = gd->bd;
+	ulong start, end;
+	int i;
+
+	for (i = 0; i < CONFIG_NR_DRAM_BANKS; ++i) {
+#if defined(CONFIG_ARM) || defined(CONFIG_AVR32) || defined(COFNIG_NDS32) || \
+defined(CONFIG_SANDBOX) || defined(CONFIG_X86)
+		start = bd->bi_dram[i].start;
+		end = bd->bi_dram[i].start + bd->bi_dram[i].size - 1;
+#else
+		start = bd->bi_memstart;
+		end = bd->bi_memsize;
+#endif
+
+		if ((ulong)video_fb_address >= start &&
+		    (ulong)video_fb_address < end)
+			return 1;
+	}
+	return 0;
+}
+
 static int video_init(void)
 {
 	unsigned char color8;
@@ -1984,6 +2019,8 @@ static int video_init(void)
 #ifdef CONFIG_VIDEO_HW_CURSOR
 	video_init_hw_cursor(VIDEO_FONT_WIDTH, VIDEO_FONT_HEIGHT);
 #endif
+
+	cfb_do_flush_cache = cfb_fb_is_in_dram() && dcache_status();
 
 	/* Init drawing pats */
 	switch (VIDEO_DATA_FORMAT) {
