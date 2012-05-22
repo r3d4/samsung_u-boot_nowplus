@@ -204,16 +204,18 @@
 /* Watchdog support */
 #define CONFIG_HW_WATCHDOG
 
-#if 0
+#if 1
 /*
  * Framebuffer
  */
 /* Video console */
 #define CONFIG_VIDEO
 #define CONFIG_CFB_CONSOLE
-#define CONFIG_CFB_CONSOLE_ANSI	 /* Enable ANSI escape codes in framebuffer */
+//#define CONFIG_CFB_CONSOLE_ANSI	 /* Enable ANSI escape codes in framebuffer */
 #define CONFIG_VIDEO_LOGO
 #define CONFIG_VIDEO_SW_CURSOR
+#define CONFIG_CONSOLE_EXTRA_INFO
+// #define CONFIG_VGA_AS_SINGLE_DEVICE
 //#define CONFIG_SPLASH_SCREEN
 
 /* functions for cfb_console */
@@ -239,7 +241,7 @@ int nowplus_kp_getc(void);
 	"sercon=setenv con serial; run setcon\0" \
 	"usbcon=setenv con usbtty; run setcon\0" \
 	"vgacon=setenv con vga; run setcon\0" \
-	"slide=gpio input 71\0" \
+	"power=gpio input 24\0" \
 	"switchmmc=mmc dev ${mmcnum}\0" \
 	"kernaddr=0x82008000\0" \
 	"initrdaddr=0x84008000\0" \
@@ -302,7 +304,7 @@ int nowplus_kp_getc(void);
 	"bootmenu_1=Internal eMMC=run emmcboot\0" \
 	"bootmenu_2=External SD card=run sdboot\0" \
 	"bootmenu_3=U-Boot boot order=boot\0" \
-	"bootmenu_delay=10\0" \
+	"bootmenu_delay=60\0" \
 	""
     
 /*   

@@ -49,6 +49,12 @@
 
 #include "nowplus.h"
 
+#define DISPC_CONTROL           0x48050440
+#define DISPC_GFX_ATTRIBUTES    0x480504A0
+#define DISPC_GFX_BA0           0x48050480
+#define DISPC_GFX_ATTRIBUTES    0x480504A0
+#define FB_ADDR                 0x8fc00000
+
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -74,11 +80,8 @@ int board_init(void)
 
 	return 0;
 }
-#define DISPC_CONTROL           0x48050440
-#define DISPC_GFX_ATTRIBUTES    0x480504A0
-#define DISPC_GFX_BA0           0x48050480
-#define DISPC_GFX_ATTRIBUTES    0x480504A0
-#define FB_ADDR                 0x8fc00000
+
+#ifdef CONFIG_VIDEO
 /*
  * Routine: video_hw_init
  * Description: Set up the GraphicDevice depending on sys_boot.
@@ -118,7 +121,7 @@ void *video_hw_init(void)
 	gdev.winSizeY = 800;
 	gdev.gdfBytesPP = BytesPP;
 	gdev.gdfIndex = GDF_16BIT_565RGB;
-	memset((void *)gdev.frameAdrs, 20, memsize);
+	memset((void *)gdev.frameAdrs, 0x00, memsize);
 	return (void *) &gdev;
  #else 
     u32 fbaddr;
@@ -134,11 +137,38 @@ void *video_hw_init(void)
 	gdev.winSizeY = 800;
 	gdev.gdfBytesPP = BytesPP;
 	gdev.gdfIndex = GDF_32BIT_X888RGB;   //GFXFORMAT: 0x8: RGB 24 (un-packed in 32-bit container)
-	memset((void *)gdev.frameAdrs, 20, memsize);
+	memset((void *)gdev.frameAdrs, 0x00, memsize);
 	return (void *) &gdev;
 #endif
 }
 
+#ifdef CONFIG_CONSOLE_EXTRA_INFO
+void video_get_info_str(int line_number, char *info)
+{
+	// u32 srev = get_cpu_rev();
+
+	// switch (line_number) {
+	// case 2:
+		// sprintf(info, " CPU  : TI OMAP rev %d.%d%s at %d MHz",
+			// (srev & 0xF0) >> 4, (srev & 0x0F),
+			// ((srev & 0x8000) ? " unknown" : ""),
+		// mxc_get_clock(MXC_ARM_CLK) / 1000000);
+		// break;
+	// case 3:
+		// strcpy(info, " " BOARD_STRING);
+		// break;
+	// default:
+		// info[0] = 0;
+    switch (line_number) {
+	case 2:
+		sprintf(info, " Samsung Nowplus Rev 100");
+		break;
+	default:
+		info[0] = 0;
+	}
+}
+#endif
+#endif
 /*
  * Routine: twl4030_regulator_set_mode
  * Description: Set twl4030 regulator mode over i2c powerbus.
