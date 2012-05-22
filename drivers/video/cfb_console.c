@@ -1082,7 +1082,7 @@ void video_putc(const char c)
 				break;
 			case 'J':
 				/* clear console and move cursor to 0, 0 */
-				console_clear();
+				//console_clear();
 				console_cursor_set_position(0, 0);
 				break;
 			case 'K':

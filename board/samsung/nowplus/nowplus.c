@@ -267,14 +267,14 @@ void hw_watchdog_reset(void)
 /*
  * TWL4030 keypad handler for cfb_console
  */
-#define KEY_FRONT		    132
-#define KEY_PHONE		    169	/* Media Select Telephone */
-#define KEY_EXIT		    174	/* AC Exit */
-#define KEY_SEARCH		    217
-#define KEY_VOLUMEUP		115
-#define KEY_CAMERA_FOCUS	0x210
-#define KEY_CAMERA		    212
-#define KEY_VOLUMEDOWN		114
+#define KEY_FRONT           0
+#define KEY_PHONE           '\r'
+#define KEY_EXIT            '\e'
+#define KEY_SEARCH          0
+#define KEY_VOLUMEUP        0
+#define KEY_CAMERA_FOCUS    0
+#define KEY_CAMERA          0
+#define KEY_VOLUMEDOWN      0
 
 static const char keymap[] = {
    KEY_FRONT,           KEY_PHONE,      KEY_EXIT,
@@ -321,27 +321,22 @@ int nowplus_kp_init(void)
 	return ret;
 }
 
-static void nowplus_kp_fill(u8 k, u8 mods)
+static void nowplus_kp_fill(u8 k)
 {
-	if (!(mods & 2) && (k == 18 || k == 31 || k == 33 || k == 34)) {
-		/* cursor keys, without fn */
+	if ((k == 5 || k == 8)) {
+		/* volume keys */
 		keybuf[keybuf_tail++] = '\e';
 		keybuf_tail %= KEYBUF_SIZE;
 		keybuf[keybuf_tail++] = '[';
 		keybuf_tail %= KEYBUF_SIZE;
-		if (k == 18) /* up */
+		if (k == 5) /* up */
 			keybuf[keybuf_tail++] = 'A';
-		else if (k == 31) /* left */
-			keybuf[keybuf_tail++] = 'D';
-		else if (k == 33) /* down */
+		else  /* down */
 			keybuf[keybuf_tail++] = 'B';
-		else if (k == 34) /* right */
-			keybuf[keybuf_tail++] = 'C';
 		keybuf_tail %= KEYBUF_SIZE;
 		return;
 	}
-
-	keybuf[keybuf_tail++] = k;
+	keybuf[keybuf_tail++] = keymap[k];
 	keybuf_tail %= KEYBUF_SIZE;
 }
 
@@ -353,7 +348,6 @@ int nowplus_kp_tstc(void)
 {
 	u8 c, r, dk, i;
 	u8 intr;
-	u8 mods;
 
 	/* localy lock twl4030 i2c bus */
 	if (test_and_set_bit(0, &twl_i2c_lock))
@@ -372,20 +366,16 @@ int nowplus_kp_tstc(void)
 			i2c_read(TWL4030_CHIP_KEYPAD,
 				TWL4030_KEYPAD_FULL_CODE_7_0, 1, keys, 8);
 
-			/* cut out modifier keys from the keystate */
-			mods = keys[4] >> 4;
-			keys[4] &= 0x0f;
-
-			for (c = 0; c < 8; c++) {
+			for (c = 0; c < 3; c++) {
 
 				/* get newly pressed keys only */
 				dk = ((keys[c] ^ old_keys[c])&keys[c]);
 				old_keys[c] = keys[c];
 
 				/* fill the keybuf */
-				for (r = 0; r < 8; r++) {
+				for (r = 0; r < 3; r++) {
 					if (dk&1)
-						nowplus_kp_fill((c*8)+r, mods);
+						nowplus_kp_fill((c*3)+r);
 					dk = dk >> 1;
 				}
 

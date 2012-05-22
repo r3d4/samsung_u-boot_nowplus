@@ -129,7 +129,7 @@ static int print_menu(int active)
 	printf(ANSI_CURSOR_POSITION, n+5, 1);
 	puts(ANSI_CLEAR_LINE);
 	printf(ANSI_CURSOR_POSITION, n+6, 1);
-	puts("  Press UP/DOWN to move, ENTER to select");
+	puts("  Press Volume +/- to move, SEARCH to select");
 	puts(ANSI_CLEAR_LINE_TO_END);
 	printf(ANSI_CURSOR_POSITION, n+7, 1);
 	puts(ANSI_CLEAR_LINE);
@@ -288,7 +288,8 @@ int do_bootmenu(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
 			if (active < count)
 				++active;
 
-		} else if (key == 3) {
+		} 
+         else if (key == 3) {
 
 			char *str;
 			char *end;
