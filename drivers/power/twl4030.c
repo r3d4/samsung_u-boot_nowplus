@@ -86,9 +86,9 @@ void twl4030_pmrecv_vsel_cfg(u8 vsel_reg, u8 vsel_val,
 
 void twl4030_power_init(void)
 {
-	/* set VAUX3 to 2.8V */
+	/* set VAUX3 to 1.8V */
 	twl4030_pmrecv_vsel_cfg(TWL4030_PM_RECEIVER_VAUX3_DEDICATED,
-				TWL4030_PM_RECEIVER_VAUX3_VSEL_28,
+				TWL4030_PM_RECEIVER_VAUX3_VSEL_18,
 				TWL4030_PM_RECEIVER_VAUX3_DEV_GRP,
 				TWL4030_PM_RECEIVER_DEV_GRP_P1);
 

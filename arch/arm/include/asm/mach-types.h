@@ -272,6 +272,7 @@ extern unsigned int __machine_arch_type;
 #define MACH_TYPE_U300                 1627
 #define MACH_TYPE_WRT350N_V2           1633
 #define MACH_TYPE_OMAP_LDP             1639
+#define MACH_TYPE_OMAP3_NOWPLUS        1641
 #define MACH_TYPE_MX35_3DS             1645
 #define MACH_TYPE_NEUROS_OSD2          1647
 #define MACH_TYPE_TRIZEPS4WL           1649

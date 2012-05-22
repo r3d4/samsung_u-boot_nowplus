@@ -294,6 +294,10 @@ enum {
 #define NUMONYX_RASWIDTH_165		15
 #define NUMONYX_V_MCFG_165(size)	MCFG((size), NUMONYX_RASWIDTH_165)
 
+#ifdef CONFIG_OMAP3_SAMSUNG_DDR
+#define V_ACTIMA_165 0x629db485
+#define V_ACTIMB_165 0x00022014
+#endif
 /*
  * GPMC settings -
  * Definitions is as per the following format
