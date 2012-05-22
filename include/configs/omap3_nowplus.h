@@ -213,6 +213,7 @@
 #define CONFIG_CFB_CONSOLE
 #define CONFIG_CFB_CONSOLE_ANSI	 /* Enable ANSI escape codes in framebuffer */
 #define CONFIG_VIDEO_LOGO
+#define CONFIG_VIDEO_BMP_LOGO
 #define CONFIG_VIDEO_SW_CURSOR
 #define CONFIG_CONSOLE_EXTRA_INFO
 // #define CONFIG_VGA_AS_SINGLE_DEVICE
