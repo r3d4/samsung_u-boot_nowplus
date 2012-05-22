@@ -48,8 +48,8 @@
 /* It doesn't really matter what we set this to. NOLO will load u-boot.bin
  * in a random place anyway, and we have to copy.
  */
-//#define CONFIG_SYS_TEXT_BASE	0x80008000
-#define CONFIG_SYS_TEXT_BASE	0x80e80000
+#define CONFIG_SYS_TEXT_BASE	0x80008000
+//#define CONFIG_SYS_TEXT_BASE	0x80e80000
 
 #define CONFIG_SDRC			/* The chip has SDRC controller */
 
@@ -389,13 +389,11 @@ int nowplus_kp_getc(void);
 /*-----------------------------------------------------------------------
  * Physical Memory Map
  */
-#define CONFIG_NR_DRAM_BANKS		2
+#define CONFIG_NR_DRAM_BANKS	2
 #define PHYS_SDRAM_1			OMAP34XX_SDRC_CS0
-// #define PHYS_SDRAM_1_SIZE	    (32 << 20)	/* at least 32 MiB */
-// #define PHYS_SDRAM_2		    OMAP34XX_SDRC_CS1
+#define PHYS_SDRAM_1_SIZE	    (32 << 20)	/* at least 32 MiB */
+#define PHYS_SDRAM_2		    OMAP34XX_SDRC_CS1
 
-// /* SDRAM Bank Allocation method */
-// #define SDRC_R_B_C		1
 
 /*-----------------------------------------------------------------------
  * FLASH and environment organization

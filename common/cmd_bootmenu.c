@@ -129,7 +129,7 @@ static int print_menu(int active)
 	printf(ANSI_CURSOR_POSITION, n+5, 1);
 	puts(ANSI_CLEAR_LINE);
 	printf(ANSI_CURSOR_POSITION, n+6, 1);
-	puts("  Press Volume +/- to move, SEARCH to select");
+	puts("  Press Volume +/- to move, CALL to select");
 	puts(ANSI_CLEAR_LINE_TO_END);
 	printf(ANSI_CURSOR_POSITION, n+7, 1);
 	puts(ANSI_CLEAR_LINE);

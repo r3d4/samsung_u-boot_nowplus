@@ -5031,6 +5031,19 @@ extern unsigned int __machine_arch_type;
 # define machine_is_centro()	(0)
 #endif
 
+
+#ifdef CONFIG_MACH_OMAP3_NOWPLUS
+# ifdef machine_arch_type
+#  undef machine_arch_type
+#  define machine_arch_type	__machine_arch_type
+# else
+#  define machine_arch_type	MACH_TYPE_OMAP3_NOWPLUS
+# endif
+# define machine_is_omap3_nowplus()	(machine_arch_type == MACH_TYPE_OMAP3_NOWPLUS)
+#else
+# define machine_is_omap3_nowplus()	(0)
+#endif
+
 #ifdef CONFIG_MACH_NOKIA_RX51
 # ifdef machine_arch_type
 #  undef machine_arch_type
