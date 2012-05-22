@@ -124,15 +124,15 @@
 /* USB device configuration */
 #define CONFIG_USB_DEVICE
 #define CONFIG_USB_TTY
-
+#define CONFIG_SYS_CONSOLE_IS_IN_ENV
 #define CONFIG_USBD_VENDORID		0x04e8
 #define CONFIG_USBD_PRODUCTID		0x6601
 #define CONFIG_USBD_MANUFACTURER	"Samsung Electronics Co., Ltd"
 #define CONFIG_USBD_PRODUCT_NAME	"Samsung GT-I8320"
 
 
-#define CONFIG_SYS_CONSOLE_IS_IN_ENV
 #define CONFIG_SYS_NO_FLASH
+#define CONFIG_SYS_SKIP_ARM_RELOCATION
 
 /* OneNand support is disabled, because U-Boot image is too big */
 /* Uncomment next line to enable it */
