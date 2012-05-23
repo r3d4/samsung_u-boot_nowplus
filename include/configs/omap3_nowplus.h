@@ -74,7 +74,7 @@
 #define CONFIG_CMDLINE_TAG	/* enable passing kernel command line string */
 #define CONFIG_INITRD_TAG			/* enable passing initrd */
 #define CONFIG_SETUP_MEMORY_TAGS		/* enable memory tag */
-#define CONFIG_REVISION_TAG
+
 /*
  * Size of malloc() pool
  */
@@ -117,9 +117,9 @@
 #define CONFIG_OMAP3_SAMSUNG_DDR		1
 
 /* USB */
-#define CONFIG_MUSB_UDC
-#define CONFIG_USB_OMAP3
-#define CONFIG_TWL4030_USB
+// #define CONFIG_MUSB_UDC
+// #define CONFIG_USB_OMAP3
+// #define CONFIG_TWL4030_USB
 
 /* USB device configuration */
 #define CONFIG_USB_DEVICE
@@ -204,7 +204,6 @@
 /* Watchdog support */
 #define CONFIG_HW_WATCHDOG
 
-#if 1
 /*
  * Framebuffer
  */
@@ -228,7 +227,12 @@ int nowplus_kp_init(void);
 int nowplus_kp_tstc(void);
 int nowplus_kp_getc(void);
 #endif
-#endif
+//disable LCD controller to hide frambuffer garbage 
+// #define DISABLE_LCD             nowplus_lcd_disable()
+// #ifndef __ASSEMBLY__
+// void nowplus_lcd_disable(void);
+// #endif
+
 /* Environment information */
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"mtdparts=" MTDPARTS_DEFAULT "\0" \
@@ -247,44 +251,103 @@ int nowplus_kp_getc(void);
 	"kernaddr=0x82008000\0" \
 	"initrdaddr=0x84008000\0" \
 	"scriptaddr=0x86008000\0" \
+    "fileload=${mmctype}load mmc ${mmcnum}:${mmcpart} " \
+		"${loadaddr} ${mmcfile}\0" \
+	"kernload=setenv loadaddr ${kernaddr};" \
+		"setenv mmcfile ${mmckernfile};" \
+		"run fileload\0" \
+	"initrdload=setenv loadaddr ${initrdaddr};" \
+		"setenv mmcfile ${mmcinitrdfile};" \
+		"run fileload\0" \
+	"scriptload=setenv loadaddr ${scriptaddr};" \
+		"setenv mmcfile ${mmcscriptfile};" \
+		"run fileload\0" \
+     "scriptboot=echo Running ${mmcscriptfile} from mmc " \
+		"${mmcnum}:${mmcpart} ...; source ${scriptaddr}\0" \
+	"kernboot=echo Booting ${mmckernfile} from mmc " \
+		"${mmcnum}:${mmcpart} ...; bootm ${kernaddr}\0" \
+	"kerninitrdboot=echo Booting ${mmckernfile} ${mmcinitrdfile} from mmc "\
+		"${mmcnum}:${mmcpart} ...; bootm ${kernaddr} ${initrdaddr}\0" \
+	"attachboot=echo Booting attached kernel image ...;" \
+		"bootm ${nowplus_kernaddr}\0" \
+ 	"attachboot_limo=echo Booting attached Limo kernel image ...;" \
+		"setenv atagaddr 0x80000100;" \
+		"bootm ${nowplus_kernaddr}\0" \
+   "trymmcscriptboot=if run switchmmc; then " \
+            "if run scriptload; then " \
+                "run scriptboot;" \
+            "fi;" \
+        "fi\0" \
+	"trymmckernboot=if run switchmmc; then " \
+			"if run kernload; then " \
+				"run kernboot;" \
+			"fi;" \
+		"fi\0" \
+	"trymmckerninitrdboot=if run switchmmc; then " \
+			"if run initrdload; then " \
+				"if run kernload; then " \
+					"run kerninitrdboot;" \
+				"fi;" \
+			"fi; " \
+		"fi\0" \
+    "trymmcpartboot=setenv mmcscriptfile boot/boot.scr; run trymmcscriptboot;" \
+		"setenv mmckernfile boot/uImage; run trymmckernboot\0" \
+	"trymmcallpartboot=setenv mmcpart 1; run trymmcpartboot;" \
+		"setenv mmcpart 2; run trymmcpartboot;" \
+		"setenv mmcpart 3; run trymmcpartboot;" \
+		"setenv mmcpart 4; run trymmcpartboot\0" \
+	"trymmcboot=if run switchmmc; then " \
+			"setenv mmctype fat;" \
+			"run trymmcallpartboot;" \
+			"setenv mmctype ext2;" \
+			"run trymmcallpartboot;" \
+			"setenv mmctype ext4;" \
+			"run trymmcallpartboot;" \
+		"fi\0" \
+	"emmcboot=setenv mmcnum 1; run trymmcboot\0" \
+	"sdboot=setenv mmcnum 0; run trymmcboot\0" \
 	"mmcboot=echo Booting from mmc ...;" \
-        "setenv bootargs root=/dev/mmcblk0p1 rw " \
+        "setenv bootargs root=/dev/mmcblk0p2 rw " \
         "mem=256M init=/init rootwait " \
         "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
         "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
-		"bootm ${nowplus_kernaddr}\0" \
+		"run attachboot\0" \
+   	"mmcboot2=echo Booting from mmc ...;" \
+        "setenv bootargs root=/dev/mmcblk0p2 rw " \
+        "mem=256M init=/init rootwait " \
+        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
+        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
+        "setenv mmcnum 0;setenv mmctype ext2;setenv mmcpart 2;" \
+		"setenv mmckernfile boot/uImage; run trymmckernboot\0" \
     "nandboot=echo Booting from internal nand ...;" \
         "setenv bootargs root=31:0 rootfstype=yaffs2 " \
         "mem=256M init=/init rootwait " \
         "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
         "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
-		"bootm ${nowplus_kernaddr}\0" \
+		"run attachboot\0" \
     "recovboot=echo Booting recovery ...;" \
-        "setenv bootargs root=/dev/mmcblk0p2 rw " \
+        "setenv bootargs root=/dev/mmcblk0p3 rw " \
         "mem=256M init=/init rootwait " \
         "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
         "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
-		"bootm ${nowplus_kernaddr}\0" \
+		"run attachboot\0" \
     "menucmd=bootmenu\0" \
 	"bootmenu_0=Nand=run nandboot\0" \
 	"bootmenu_1=SD card=run mmcboot\0" \
 	"bootmenu_2=Recovery=run recovboot\0" \
+    "bootmenu_3=SD card (ext. Kernel)=run mmcboot2\0" \
 	"bootmenu_4=U-Boot boot order=boot\0" \
 	"bootmenu_delay=60\0" \
     ""
-/*   
+ /*  
 #define CONFIG_PREBOOT \
-	"if run slide; then " \
-		"setenv mmcnum 1; setenv mmcpart 1; setenv mmctype fat;" \
+	"if run power; then " \
+		"setenv mmcnum 0; setenv mmcpart 1; setenv mmctype fat;" \
 		"setenv mmcscriptfile bootmenu.scr;" \
 		"run trymmcscriptboot;" \
 	"else " \
-		"setenv bootmenu_delay 0;" \
+		"setenv bootmenu_delay 10;" \
 	"fi"
-
-#define CONFIG_PREBOOT \
-    "run vgacon;" \
-	"bootmenu;" \
 */
 #define CONFIG_PREMONITOR \
 	"echo Extra commands:;" \

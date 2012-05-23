@@ -49,12 +49,6 @@
 
 #include "nowplus.h"
 
-#define DISPC_CONTROL           0x48050440
-#define DISPC_GFX_ATTRIBUTES    0x480504A0
-#define DISPC_GFX_BA0           0x48050480
-#define DISPC_GFX_ATTRIBUTES    0x480504A0
-#define FB_ADDR                 0x8fc00000
-
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -81,6 +75,21 @@ int board_init(void)
 	return 0;
 }
 
+void nowplus_lcd_disable(void)
+{
+    u32 tmp;
+    u32 memsize = gdev.winSizeX*gdev.winSizeY*gdev.gdfBytesPP;
+    memset((void *)gdev.frameAdrs, 0x00, memsize);
+    
+    //disable graphics pipeline
+    tmp = readl(DISPC_GFX_ATTRIBUTES);
+    writel(tmp & ~(1<<0), DISPC_GFX_ATTRIBUTES);
+    
+    //disable display
+    // tmp = readl(DISPC_CONTROL);
+    // writel(tmp & ~(1<<0), DISPC_CONTROL); 
+}
+
 #ifdef CONFIG_VIDEO
 /*
  * Routine: video_hw_init
@@ -88,58 +97,21 @@ int board_init(void)
  */
 void *video_hw_init(void)
 { 
-
-#if 0
-    u32 tmp;
     u32 fbaddr;
-    u32 BytesPP = 2;
-    u32 memsize = 800*480*BytesPP; 
-    
-	/* fill in missing Graphic device struct */
-	fbaddr = (u32) malloc(memsize);
-	if (fbaddr == 0) {
-		printf("%s() malloc(%d) failed\n", __func__, memsize);
-		return 0;
-	}
-    
-    //DSS.DISPC_GFX_ATTRIBUTES[0] = 0
-    tmp = readl(DISPC_GFX_ATTRIBUTES); 
-    writel(tmp & ~(1<<0), DISPC_GFX_ATTRIBUTES);  //Graphics disabled (graphics pipeline inactive and graphics window not present)
-    
-    //set new fbaddr
-    writel(fbaddr, DISPC_GFX_BA0);
-    //set  DISPC_GFX_ATTRIBUTES to RGB
-    writel(0x06<<1, DISPC_GFX_ATTRIBUTES);
-    
-    writel(tmp | (1<<0), DISPC_GFX_ATTRIBUTES);  //Graphics enabled (graphics pipeline active and graphics window present on the screen)
-    tmp = readl( DISPC_CONTROL); 
-    writel(tmp | (1<<5), DISPC_CONTROL,);       // hardware can update the internal registers at the VFP start period.
-    
-	/* fill in Graphic Device */
-	gdev.frameAdrs = fbaddr;
-	gdev.winSizeX = 480;
-	gdev.winSizeY = 800;
-	gdev.gdfBytesPP = BytesPP;
-	gdev.gdfIndex = GDF_16BIT_565RGB;
-	memset((void *)gdev.frameAdrs, 0x00, memsize);
-	return (void *) &gdev;
- #else 
-    u32 fbaddr;
-    u32 BytesPP = 4;
+    u32 BytesPP = 4;    // SBL inits to 24bit color packed to 32bit
     u32 memsize = 800*480*BytesPP; 
     
       //Get framebuffer addr, set by SBL
     fbaddr = readl( DISPC_GFX_BA0);
 
 	/* fill in Graphic Device */
-	gdev.frameAdrs = FB_ADDR;
+	gdev.frameAdrs = fbaddr;
 	gdev.winSizeX = 480;
 	gdev.winSizeY = 800;
 	gdev.gdfBytesPP = BytesPP;
 	gdev.gdfIndex = GDF_32BIT_X888RGB;   //GFXFORMAT: 0x8: RGB 24 (un-packed in 32-bit container)
 	memset((void *)gdev.frameAdrs, 0x00, memsize);
 	return (void *) &gdev;
-#endif
 }
 
 #ifdef CONFIG_CONSOLE_EXTRA_INFO
@@ -181,7 +153,6 @@ static void twl4030_regulator_set_mode(u8 id, u8 mode)
 	twl4030_i2c_write_u8(TWL4030_CHIP_PM_MASTER, msg & 0xff,
 			TWL4030_PM_MASTER_PB_WORD_LSB);
 }
-#define GPIO150				(0x1 << 22)
 
 /*
  * Routine: misc_init_r
@@ -200,7 +171,7 @@ int misc_init_r(void)
 
 	/* initialize twl4030 power managment */
 	twl4030_power_init();
-    
+        
     // oe = readl(&gpio5_base->oe);
     // dat = readl(&gpio5_base->setdataout);
     //switch to OMAP USB
@@ -267,14 +238,6 @@ void hw_watchdog_reset(void)
 /*
  * TWL4030 keypad handler for cfb_console
  */
-#define KEY_FRONT           0
-#define KEY_PHONE           '\r'
-#define KEY_EXIT            '\e'
-#define KEY_SEARCH          0
-#define KEY_VOLUMEUP        0
-#define KEY_CAMERA_FOCUS    0
-#define KEY_CAMERA          0
-#define KEY_VOLUMEDOWN      0
 
 static const char keymap[] = {
    KEY_FRONT,           KEY_PHONE,      KEY_EXIT,

@@ -634,7 +634,10 @@ int do_bootm(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	 */
 	usb_stop();
 #endif
-
+#if defined(DISABLE_LCD)
+/* prevent garbage on LCD */
+    DISABLE_LCD;
+#endif
 	ret = bootm_load_os(images.os, &load_end, 1);
 
 	if (ret < 0) {

@@ -29,6 +29,23 @@
 extern u32 nowplus_atagaddr; /* atag address */
 extern u32 nowplus_kernaddr; /* attached kernel address */
 
+#define DISPC_CONTROL           0x48050440
+#define DISPC_GFX_ATTRIBUTES    0x480504A0
+#define DISPC_GFX_BA0           0x48050480
+#define DISPC_GFX_ATTRIBUTES    0x480504A0
+#define DISPC_CONTROL           0x48050440
+
+#define GPIO150				    (0x1 << 22)
+
+#define KEY_FRONT               0
+#define KEY_PHONE               '\r'
+#define KEY_EXIT                '\e'
+#define KEY_SEARCH              0
+#define KEY_VOLUMEUP            0
+#define KEY_CAMERA_FOCUS        0
+#define KEY_CAMERA              0
+#define KEY_VOLUMEDOWN          0
+
 /*
  * IEN  - Input Enable
  * IDIS - Input Disable
