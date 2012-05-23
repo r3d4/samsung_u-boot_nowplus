@@ -74,7 +74,7 @@
 #define CONFIG_CMDLINE_TAG	/* enable passing kernel command line string */
 #define CONFIG_INITRD_TAG			/* enable passing initrd */
 #define CONFIG_SETUP_MEMORY_TAGS		/* enable memory tag */
-
+#define CONFIG_REVISION_TAG
 /*
  * Size of malloc() pool
  */
@@ -123,7 +123,7 @@
 
 /* USB device configuration */
 #define CONFIG_USB_DEVICE
-#define CONFIG_USB_TTY
+/*#define CONFIG_USB_TTY*/
 
 #define CONFIG_USBD_VENDORID		0x04e8
 #define CONFIG_USBD_PRODUCTID		0x6601
@@ -247,67 +247,31 @@ int nowplus_kp_getc(void);
 	"kernaddr=0x82008000\0" \
 	"initrdaddr=0x84008000\0" \
 	"scriptaddr=0x86008000\0" \
-	"fileload=${mmctype}load mmc ${mmcnum}:${mmcpart} " \
-		"${loadaddr} ${mmcfile}\0" \
-	"kernload=setenv loadaddr ${kernaddr};" \
-		"setenv mmcfile ${mmckernfile};" \
-		"run fileload\0" \
-	"initrdload=setenv loadaddr ${initrdaddr};" \
-		"setenv mmcfile ${mmcinitrdfile};" \
-		"run fileload\0" \
-	"scriptload=setenv loadaddr ${scriptaddr};" \
-		"setenv mmcfile ${mmcscriptfile};" \
-		"run fileload\0" \
-	"scriptboot=echo Running ${mmcscriptfile} from mmc " \
-		"${mmcnum}:${mmcpart} ...; source ${scriptaddr}\0" \
-	"kernboot=echo Booting ${mmckernfile} from mmc " \
-		"${mmcnum}:${mmcpart} ...; bootm ${kernaddr}\0" \
-	"kerninitrdboot=echo Booting ${mmckernfile} ${mmcinitrdfile} from mmc "\
-		"${mmcnum}:${mmcpart} ...; bootm ${kernaddr} ${initrdaddr}\0" \
-	"attachboot=echo Booting attached kernel image ...;" \
-		"setenv atagaddr 0x80000100;" \
+	"mmcboot=echo Booting from mmc ...;" \
+        "setenv bootargs root=/dev/mmcblk0p1 rw " \
+        "mem=256M init=/init rootwait " \
+        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
+        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
 		"bootm ${nowplus_kernaddr}\0" \
-	"trymmcscriptboot=if run switchmmc; then " \
-			"if run scriptload; then " \
-				"run scriptboot;" \
-			"fi;" \
-		"fi\0" \
-	"trymmckernboot=if run switchmmc; then " \
-			"if run kernload; then " \
-				"run kernboot;" \
-			"fi;" \
-		"fi\0" \
-	"trymmckerninitrdboot=if run switchmmc; then " \
-			"if run initrdload; then " \
-				"if run kernload; then " \
-					"run kerninitrdboot;" \
-				"fi;" \
-			"fi; " \
-		"fi\0" \
-	"trymmcpartboot=setenv mmcscriptfile boot.scr; run trymmcscriptboot;" \
-		"setenv mmckernfile uImage; run trymmckernboot\0" \
-	"trymmcallpartboot=setenv mmcpart 1; run trymmcpartboot;" \
-		"setenv mmcpart 2; run trymmcpartboot;" \
-		"setenv mmcpart 3; run trymmcpartboot;" \
-		"setenv mmcpart 4; run trymmcpartboot\0" \
-	"trymmcboot=if run switchmmc; then " \
-			"setenv mmctype fat;" \
-			"run trymmcallpartboot;" \
-			"setenv mmctype ext2;" \
-			"run trymmcallpartboot;" \
-			"setenv mmctype ext4;" \
-			"run trymmcallpartboot;" \
-		"fi\0" \
-	"emmcboot=setenv mmcnum 1; run trymmcboot\0" \
-	"sdboot=setenv mmcnum 0; run trymmcboot\0" \
-	"menucmd=bootmenu\0" \
-	"bootmenu_0=Attached kernel=run attachboot\0" \
-	"bootmenu_1=Internal eMMC=run emmcboot\0" \
-	"bootmenu_2=External SD card=run sdboot\0" \
-	"bootmenu_3=U-Boot boot order=boot\0" \
+    "nandboot=echo Booting from internal nand ...;" \
+        "setenv bootargs root=31:0 rootfstype=yaffs2 " \
+        "mem=256M init=/init rootwait " \
+        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
+        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
+		"bootm ${nowplus_kernaddr}\0" \
+    "recovboot=echo Booting recovery ...;" \
+        "setenv bootargs root=/dev/mmcblk0p2 rw " \
+        "mem=256M init=/init rootwait " \
+        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
+        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
+		"bootm ${nowplus_kernaddr}\0" \
+    "menucmd=bootmenu\0" \
+	"bootmenu_0=Nand=run nandboot\0" \
+	"bootmenu_1=SD card=run mmcboot\0" \
+	"bootmenu_2=Recovery=run recovboot\0" \
+	"bootmenu_4=U-Boot boot order=boot\0" \
 	"bootmenu_delay=60\0" \
-	""
-    
+    ""
 /*   
 #define CONFIG_PREBOOT \
 	"if run slide; then " \
@@ -333,7 +297,7 @@ int nowplus_kp_getc(void);
 	"echo"
     
 #define CONFIG_BOOTCOMMAND \
-	"run attachboot;" \
+	"run mmcboot;" \
 	"echo"
  
 /*

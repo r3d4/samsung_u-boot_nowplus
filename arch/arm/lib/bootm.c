@@ -280,15 +280,17 @@ static void boot_prep_linux(bootm_headers_t *images)
 		debug("using: ATAGS\n");
 
 		if (atagaddr)
+        {
 			gd->bd->bi_boot_params = simple_strtoul(atagaddr, NULL, 16);
 
-		if (gd->bd->bi_boot_params) {
-			printf("Using existing atags at %#lx\n", gd->bd->bi_boot_params);
+            if (gd->bd->bi_boot_params) {
+                printf("Using existing atags at %#lx\n", gd->bd->bi_boot_params);
 
-			params = (struct tag *) gd->bd->bi_boot_params;
-			while (params->hdr.size > 0)
-				params = tag_next(params);
-		} else {
+                params = (struct tag *) gd->bd->bi_boot_params;
+                while (params->hdr.size > 0)
+                    params = tag_next(params);
+            }
+        }else {
 #ifdef CONFIG_SETUP_ANY_TAG
 			setup_start_tag(gd->bd);
 #endif
