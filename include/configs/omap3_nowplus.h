@@ -49,7 +49,6 @@
  * in a random place anyway, and we have to copy.
  */
 #define CONFIG_SYS_TEXT_BASE	0x80008000
-//#define CONFIG_SYS_TEXT_BASE	0x80e80000
 
 #define CONFIG_SDRC			/* The chip has SDRC controller */
 
@@ -69,7 +68,9 @@
 
 #undef CONFIG_USE_IRQ				/* no support for IRQs */
 #define CONFIG_MISC_INIT_R
-#define CONFIG_SKIP_LOWLEVEL_INIT		/* Samsung SBL set everything up */
+//#define CONFIG_SKIP_LOWLEVEL_INIT		/* Samsung SBL setup everything */
+#define CONFIG_SKIP_DPLL4_INIT                 /* don't init/change DPLL4: fix display issues */
+
 
 #define CONFIG_CMDLINE_TAG	/* enable passing kernel command line string */
 #define CONFIG_INITRD_TAG			/* enable passing initrd */
@@ -122,8 +123,8 @@
 // #define CONFIG_TWL4030_USB
 
 /* USB device configuration */
-#define CONFIG_USB_DEVICE
-/*#define CONFIG_USB_TTY*/
+// #define CONFIG_USB_DEVICE
+// #define CONFIG_USB_TTY
 
 #define CONFIG_USBD_VENDORID		0x04e8
 #define CONFIG_USBD_PRODUCTID		0x6601
@@ -228,10 +229,10 @@ int nowplus_kp_tstc(void);
 int nowplus_kp_getc(void);
 #endif
 //disable LCD controller to hide frambuffer garbage 
-// #define DISABLE_LCD             nowplus_lcd_disable()
-// #ifndef __ASSEMBLY__
-// void nowplus_lcd_disable(void);
-// #endif
+//#define DISABLE_LCD             nowplus_lcd_disable()
+#ifndef __ASSEMBLY__
+void nowplus_lcd_disable(void);
+#endif
 
 /* Environment information */
 #define CONFIG_EXTRA_ENV_SETTINGS \
@@ -249,8 +250,8 @@ int nowplus_kp_getc(void);
 	"power=gpio input 24\0" \
 	"switchmmc=mmc dev ${mmcnum}\0" \
 	"kernaddr=0x82008000\0" \
-	"initrdaddr=0x84008000\0" \
-	"scriptaddr=0x86008000\0" \
+	"initrdaddr=0x85008000\0" \
+	"scriptaddr=0x87008000\0" \
     "fileload=${mmctype}load mmc ${mmcnum}:${mmcpart} " \
 		"${loadaddr} ${mmcfile}\0" \
 	"kernload=setenv loadaddr ${kernaddr};" \
@@ -339,14 +340,14 @@ int nowplus_kp_getc(void);
 	"bootmenu_4=U-Boot boot order=boot\0" \
 	"bootmenu_delay=60\0" \
     ""
- /*  
+/*
 #define CONFIG_PREBOOT \
 	"if run power; then " \
-		"setenv mmcnum 0; setenv mmcpart 1; setenv mmctype fat;" \
+        "setenv bootmenu_delay 0;" \
+	"else " \
+ 		"setenv mmcnum 0; setenv mmcpart 1; setenv mmctype fat;" \
 		"setenv mmcscriptfile bootmenu.scr;" \
 		"run trymmcscriptboot;" \
-	"else " \
-		"setenv bootmenu_delay 10;" \
 	"fi"
 */
 #define CONFIG_PREMONITOR \
@@ -358,9 +359,13 @@ int nowplus_kp_getc(void);
 	"echo run emmcboot - Boot internal eMMC memory.;" \
 	"echo run attachboot - Boot attached kernel image.;" \
 	"echo"
-    
+ /*
+    "bdinfo;" \
+    "echo mm devices: ; mmc list; mmc dev;" \
+    "ext2load mmc 0:2 0x84008000 boot/uImage;" \
+*/
 #define CONFIG_BOOTCOMMAND \
-	"run mmcboot;" \
+	"run mmcboot2;" \
 	"echo"
  
 /*

@@ -606,7 +606,9 @@ void prcm_init(void)
 				LDELAY);
 
 		dpll3_init_34xx(sil_index, clk_index);
+#ifndef CONFIG_SKIP_DPLL4_INIT
 		dpll4_init_34xx(sil_index, clk_index);
+#endif
 		dpll5_init_34xx(sil_index, clk_index);
 		if (get_cpu_family() != CPU_AM35XX)
 			iva_init_34xx(sil_index, clk_index);

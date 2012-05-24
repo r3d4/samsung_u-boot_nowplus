@@ -33,7 +33,6 @@ extern u32 nowplus_kernaddr; /* attached kernel address */
 #define DISPC_GFX_ATTRIBUTES    0x480504A0
 #define DISPC_GFX_BA0           0x48050480
 #define DISPC_GFX_ATTRIBUTES    0x480504A0
-#define DISPC_CONTROL           0x48050440
 
 #define GPIO150				    (0x1 << 22)
 
@@ -56,7 +55,25 @@ extern u32 nowplus_kernaddr; /* attached kernel address */
  * M0   - Mode 0
  * The commented string gives the final mux configuration for that pin
  */
-#define MUX_NOWPLUS() \
+
+/* #define MUX_NOWPLUS MUX_NOWPLUS_ALL */
+#define MUX_NOWPLUS MUX_NOWPLUS_MMC
+
+#define MUX_NOWPLUS_MMC() \
+	MUX_VAL(CP(MMC1_CLK),		(IDIS | PTU | DIS | M0)) \
+	MUX_VAL(CP(MMC1_CMD),		(IDIS | PTU | DIS | M0)) \
+	MUX_VAL(CP(MMC1_DAT0),		(IEN  | PTU | EN  | M0)) \
+	MUX_VAL(CP(MMC1_DAT1),		(IEN  | PTU | EN  | M0)) \
+	MUX_VAL(CP(MMC1_DAT2),		(IEN  | PTU | EN  | M0)) \
+	MUX_VAL(CP(MMC1_DAT3),		(IEN  | PTU | EN  | M0)) \
+	MUX_VAL(CP(MMC1_DAT4),		(IEN  | PTD | EN  | M7)) \
+	MUX_VAL(CP(MMC1_DAT5),		(IEN  | PTD | EN  | M7)) \
+	MUX_VAL(CP(MMC1_DAT6),		(IEN  | PTD | EN  | M7)) \
+	MUX_VAL(CP(MMC1_DAT7),		(IEN  | PTD | EN  | M7)) \
+	MUX_VAL(CP(UART1_CTS),		(IEN  | PTD | EN  | M4))        //gpio 150
+
+
+#define MUX_NOWPLUS_ALL() \
 	MUX_VAL(CP(SDRC_D0),		(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(SDRC_D1),		(IEN | PTD | DIS | M0)) \
 	MUX_VAL(CP(SDRC_D2),		(IEN | PTD | DIS | M0)) \

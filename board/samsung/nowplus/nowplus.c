@@ -66,7 +66,9 @@ const omap3_sysinfo sysinfo = {
  */
 int board_init(void)
 {
-	//gpmc_init(); /* done by SBL in SRAM or SDRAM, finish GPMC */
+    /* disabled, already setup by Samung SBL */
+	//gpmc_init();
+
 	/* board id for Linux */
 	gd->bd->bi_arch_number = MACH_TYPE_OMAP3_NOWPLUS;
 	/* boot param addr */
@@ -77,18 +79,18 @@ int board_init(void)
 
 void nowplus_lcd_disable(void)
 {
-    u32 tmp;
+
     u32 memsize = gdev.winSizeX*gdev.winSizeY*gdev.gdfBytesPP;
     memset((void *)gdev.frameAdrs, 0x00, memsize);
-    
+
     //disable graphics pipeline
-    tmp = readl(DISPC_GFX_ATTRIBUTES);
-    writel(tmp & ~(1<<0), DISPC_GFX_ATTRIBUTES);
-    
-    //disable display
-    // tmp = readl(DISPC_CONTROL);
-    // writel(tmp & ~(1<<0), DISPC_CONTROL); 
+    writel(readl(DISPC_GFX_ATTRIBUTES) & ~(0x1), DISPC_GFX_ATTRIBUTES);
+#if 0
+     //disable display
+    writel(readl(DISPC_CONTROL) & ~0x3, DISPC_CONTROL);
+#endif
 }
+
 
 #ifdef CONFIG_VIDEO
 /*
@@ -96,11 +98,11 @@ void nowplus_lcd_disable(void)
  * Description: Set up the GraphicDevice depending on sys_boot.
  */
 void *video_hw_init(void)
-{ 
+{
     u32 fbaddr;
     u32 BytesPP = 4;    // SBL inits to 24bit color packed to 32bit
-    u32 memsize = 800*480*BytesPP; 
-    
+    u32 memsize = 800*480*BytesPP;
+
       //Get framebuffer addr, set by SBL
     fbaddr = readl( DISPC_GFX_BA0);
 
@@ -153,7 +155,9 @@ static void twl4030_regulator_set_mode(u8 id, u8 mode)
 	twl4030_i2c_write_u8(TWL4030_CHIP_PM_MASTER, msg & 0xff,
 			TWL4030_PM_MASTER_PB_WORD_LSB);
 }
-
+#define EN_MMC1         24
+#define CM_ICLKEN1_CORE 0x48004A10
+#define CM_FCLKEN1_CORE 0x48004A00
 /*
  * Routine: misc_init_r
  * Description: Configure board specific parts.
@@ -169,14 +173,18 @@ int misc_init_r(void)
     u32 oe;
     u32 dat;
 
+    /*enable MMC CLKs */
+    // writel(readl(CM_ICLKEN1_CORE) |(1<<EN_MMC1), CM_ICLKEN1_CORE);  // enable interface clk
+    // writel(readl(CM_FCLKEN1_CORE) |(1<<EN_MMC1), CM_FCLKEN1_CORE);  // enable functional clk
+
 	/* initialize twl4030 power managment */
 	twl4030_power_init();
-        
+
     // oe = readl(&gpio5_base->oe);
     // dat = readl(&gpio5_base->setdataout);
     //switch to OMAP USB
-	// writel(~(GPIO150), &gpio5_base->setdataout);	// lo
-	// writel(~(GPIO150), &gpio5_base->oe);	    //output    
+    // writel(readl(&gpio5_base->setdataout) & ~(GPIO150), &gpio5_base->setdataout);   // lo
+    // writel(readl(&gpio5_base->oe) & ~(GPIO150), &gpio5_base->oe);                   //output    
 
 	/* set env variable nowplus_kernaddr for calculated address of kernel */
 	sprintf(buf, "%#x", nowplus_kernaddr);
@@ -195,8 +203,10 @@ int misc_init_r(void)
  */
 void set_muxconf_regs(void)
 {
-//done by samsung SBL
-	//MUX_NOWPLUS();
+// only mux additional pins used by u-boot (MMC, ...)
+// basic pin muxing already done by Samsung SBL
+// we do complete muxing at kernel
+	MUX_NOWPLUS();
 }
 
 static unsigned long int twl_wd_time; /* last time of watchdog reset */
