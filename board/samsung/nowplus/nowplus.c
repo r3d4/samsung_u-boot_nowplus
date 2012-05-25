@@ -119,25 +119,22 @@ void *video_hw_init(void)
 #ifdef CONFIG_CONSOLE_EXTRA_INFO
 void video_get_info_str(int line_number, char *info)
 {
-	// u32 srev = get_cpu_rev();
+	u32 srev = get_cpu_rev();
 
-	// switch (line_number) {
-	// case 2:
-		// sprintf(info, " CPU  : TI OMAP rev %d.%d%s at %d MHz",
-			// (srev & 0xF0) >> 4, (srev & 0x0F),
-			// ((srev & 0x8000) ? " unknown" : ""),
-		// mxc_get_clock(MXC_ARM_CLK) / 1000000);
-		// break;
-	// case 3:
-		// strcpy(info, " " BOARD_STRING);
-		// break;
-	// default:
-		// info[0] = 0;
-    switch (line_number) {
+	switch (line_number) {
 	case 2:
-		sprintf(info, " Samsung Nowplus Rev 100");
+		sprintf(info, " CPU  : TI OMAP rev %d.%d%s at %d MHz",
+			(srev & 0xF0) >> 4, (srev & 0x0F),
+			((srev & 0x8000) ? " unknown" : ""),
+		mxc_get_clock(MXC_ARM_CLK) / 1000000);
 		break;
-	default:
+	 case 3:
+		sprintf(info, " Samsung Nowplus Board");
+		break;
+     case 4:
+		sprintf(info, " Boot mode: %d", readl(0x480022F0)&0x3f);
+		break;
+	 default:
 		info[0] = 0;
 	}
 }
