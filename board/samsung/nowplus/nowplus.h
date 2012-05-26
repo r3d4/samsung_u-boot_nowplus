@@ -34,6 +34,8 @@ extern u32 nowplus_kernaddr; /* attached kernel address */
 #define DISPC_GFX_BA0           0x48050480
 #define DISPC_GFX_ATTRIBUTES    0x480504A0
 
+#define OMAP343X_SCRATCHPAD		0x48002910
+
 #define GPIO150				    (0x1 << 22)
 
 #define KEY_FRONT               0

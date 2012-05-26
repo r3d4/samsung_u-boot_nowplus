@@ -79,16 +79,47 @@ int board_init(void)
 
 void nowplus_lcd_disable(void)
 {
-
     u32 memsize = gdev.winSizeX*gdev.winSizeY*gdev.gdfBytesPP;
     memset((void *)gdev.frameAdrs, 0x00, memsize);
 
     //disable graphics pipeline
     writel(readl(DISPC_GFX_ATTRIBUTES) & ~(0x1), DISPC_GFX_ATTRIBUTES);
+
 #if 0
      //disable display
     writel(readl(DISPC_CONTROL) & ~0x3, DISPC_CONTROL);
 #endif
+}
+		// u32 l;
+
+		// prcm_offs = OMAP3430_GR_MOD;
+		// l = ('B' << 24) | ('M' << 16) | (cmd ? (u8)*cmd : 0);
+		// /* Reserve the first word in scratchpad for communicating
+		 // * with the boot ROM. A pointer to a data structure
+		 // * describing the boot process can be stored there,
+		 // * cf. OMAP34xx TRM, Initialization / Software Booting
+		 // * Configuration. */
+/* get boot mode store in OMAP343X_SCRATCHPAD by linux kernel
+ -> can boot direct to recovery
+
+'r':  reboot mode = recovery
+'f':  reboot mode = fota
+'L':  reboot mode = Lockup
+'U':  reboot mode = Lockup
+'t':  reboot mode = shutdown with TA
+'u':  reboot mode = shutdown with USB
+'j':  reboot mode = shutdown with JIG
+'d':  reboot mode = download
+
+ */
+char nowplus_get_bootmode()
+{
+    u32 tmp = readl( OMAP343X_SCRATCHPAD + 4);
+
+    if((tmp>>24&0xff == 'B') && (tmp>>24&0xff == 'M'))
+        return tmp&0xff;
+    else
+        return 0;
 }
 
 
@@ -119,24 +150,24 @@ void *video_hw_init(void)
 #ifdef CONFIG_CONSOLE_EXTRA_INFO
 void video_get_info_str(int line_number, char *info)
 {
-	u32 srev = get_cpu_rev();
+    u32 srev = get_cpu_rev();
 
-	switch (line_number) {
-	case 2:
-		sprintf(info, " CPU  : TI OMAP rev %d.%d%s at %d MHz",
-			(srev & 0xF0) >> 4, (srev & 0x0F),
-			((srev & 0x8000) ? " unknown" : ""),
-		mxc_get_clock(MXC_ARM_CLK) / 1000000);
-		break;
-	 case 3:
-		sprintf(info, " Samsung Nowplus Board");
-		break;
+    switch (line_number) {
+    case 2:
+        sprintf(info, " Samsung Nowplus Board");
+        break;
+     case 3:
+         sprintf(info, " CPU: TI OMAP rev %d", get_cpu_rev());
+        break;
      case 4:
-		sprintf(info, " Boot mode: %d", readl(0x480022F0)&0x3f);
-		break;
-	 default:
-		info[0] = 0;
-	}
+        sprintf(info, " Boot mode: %c", nowplus_get_bootmode());
+        break;
+     case 6:
+        sprintf(info, " 2012 - r3d4 edition");
+        break;
+     default:
+        info[0] = 0;
+    }
 }
 #endif
 #endif
@@ -181,7 +212,7 @@ int misc_init_r(void)
     // dat = readl(&gpio5_base->setdataout);
     //switch to OMAP USB
     // writel(readl(&gpio5_base->setdataout) & ~(GPIO150), &gpio5_base->setdataout);   // lo
-    // writel(readl(&gpio5_base->oe) & ~(GPIO150), &gpio5_base->oe);                   //output    
+    // writel(readl(&gpio5_base->oe) & ~(GPIO150), &gpio5_base->oe);                   //output
 
 	/* set env variable nowplus_kernaddr for calculated address of kernel */
 	sprintf(buf, "%#x", nowplus_kernaddr);

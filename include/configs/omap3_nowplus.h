@@ -229,10 +229,10 @@ int nowplus_kp_tstc(void);
 int nowplus_kp_getc(void);
 #endif
 //disable LCD controller to hide frambuffer garbage 
-//#define DISABLE_LCD             nowplus_lcd_disable()
-#ifndef __ASSEMBLY__
-void nowplus_lcd_disable(void);
-#endif
+// #define DISABLE_LCD             nowplus_lcd_disable()
+// #ifndef __ASSEMBLY__
+// void nowplus_lcd_disable(void);
+// #endif
 
 /* Environment information */
 #define CONFIG_EXTRA_ENV_SETTINGS \
@@ -307,49 +307,34 @@ void nowplus_lcd_disable(void);
 		"fi\0" \
 	"emmcboot=setenv mmcnum 1; run trymmcboot\0" \
 	"sdboot=setenv mmcnum 0; run trymmcboot\0" \
-	"mmcboot=echo Booting from mmc ...;" \
-        "setenv bootargs root=/dev/mmcblk0p2 rw " \
-        "mem=256M init=/init rootwait " \
-        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
-        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
-		"run attachboot\0" \
-   	"mmcboot2=echo Booting from mmc ...;" \
-        "setenv bootargs root=/dev/mmcblk0p2 rw " \
-        "mem=256M init=/init rootwait " \
-        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
-        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
-        "setenv mmcnum 0;setenv mmctype ext2;setenv mmcpart 2;" \
-		"setenv mmckernfile boot/uImage; run trymmckernboot\0" \
-    "nandboot=echo Booting from internal nand ...;" \
-        "setenv bootargs root=31:0 rootfstype=yaffs2 " \
-        "mem=256M init=/init rootwait " \
-        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
-        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
-		"run attachboot\0" \
+   	"mmcboot=echo Booting from mmc ...;" \
+        "setenv mmcnum 0;setenv mmcpart 2;setenv mmctype ext2;" \
+		"run trymmcpartboot\0" \
     "recovboot=echo Booting recovery ...;" \
-        "setenv bootargs root=/dev/mmcblk0p3 rw " \
+        "setenv bootargs root=31:1 rootfstype=yaffs2 " \
+        "mem=256M init=/init rootwait " \
+        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
+        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
+		"run attachboot\0" \
+    "nandboot=echo Booting from internal nand ...;" \
+        "setenv bootargs root=31:2 rootfstype=yaffs2 " \
         "mem=256M init=/init rootwait " \
         "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
         "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
 		"run attachboot\0" \
     "menucmd=bootmenu\0" \
-	"bootmenu_0=Nand=run nandboot\0" \
-	"bootmenu_1=SD card=run mmcboot\0" \
+	"bootmenu_0=SD card=run mmcboot\0" \
+    "bootmenu_1=Nand=run nandboot\0" \
 	"bootmenu_2=Recovery=run recovboot\0" \
-    "bootmenu_3=SD card (ext. Kernel)=run mmcboot2\0" \
-	"bootmenu_4=U-Boot boot order=boot\0" \
-	"bootmenu_delay=60\0" \
+	"bootmenu_3=U-Boot boot order=boot\0" \
+	"bootmenu_delay=10\0" \
     ""
-/*
+
 #define CONFIG_PREBOOT \
-	"if run power; then " \
-        "setenv bootmenu_delay 0;" \
-	"else " \
  		"setenv mmcnum 0; setenv mmcpart 1; setenv mmctype fat;" \
 		"setenv mmcscriptfile bootmenu.scr;" \
-		"run trymmcscriptboot;" \
-	"fi"
-*/
+		"run trymmcscriptboot;"
+
 #define CONFIG_PREMONITOR \
 	"echo Extra commands:;" \
 	"echo run sercon - Use serial port for control.;" \
@@ -365,7 +350,7 @@ void nowplus_lcd_disable(void);
     "ext2load mmc 0:2 0x84008000 boot/uImage;" \
 */
 #define CONFIG_BOOTCOMMAND \
-	"run mmcboot2;" \
+	"run mmcboot;" \
 	"echo"
  
 /*
