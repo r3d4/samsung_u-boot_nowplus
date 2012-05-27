@@ -200,6 +200,7 @@ COBJS-y += console.o
 COBJS-y += dlmalloc.o
 COBJS-y += memsize.o
 COBJS-y += stdio.o
+COBJS-y += bootcmdblk.o
 
 
 COBJS	:= $(sort $(COBJS-y))

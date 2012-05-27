@@ -112,7 +112,7 @@ void nowplus_lcd_disable(void)
 'd':  reboot mode = download
 
  */
-char nowplus_get_bootmode()
+char bootmode_get_cmd()
 {
     u32 tmp = readl( OMAP343X_SCRATCHPAD + 4);
 
@@ -121,7 +121,6 @@ char nowplus_get_bootmode()
     else
         return 0;
 }
-
 
 #ifdef CONFIG_VIDEO
 /*
@@ -160,7 +159,7 @@ void video_get_info_str(int line_number, char *info)
          sprintf(info, " CPU: TI OMAP rev %d", get_cpu_rev());
         break;
      case 4:
-        sprintf(info, " Boot mode: %c", nowplus_get_bootmode());
+        sprintf(info, " Boot mode: %c", bootmode_get_cmd());
         break;
      case 6:
         sprintf(info, " 2012 - r3d4 edition");

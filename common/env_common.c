@@ -44,6 +44,12 @@ const uchar default_environment[] = {
 #ifdef	CONFIG_BOOTARGS
 	"bootargs="	CONFIG_BOOTARGS			"\0"
 #endif
+#if defined(CONFIG_RECOVERYCMD)
+        "recoverycmd="  CONFIG_RECOVERYCMD              "\0"
+#endif
+#if defined(CONFIG_RECOVERYBOOTCMD)
+        "recoverybootcmd="  CONFIG_RECOVERYBOOTCMD              "\0"
+#endif
 #ifdef	CONFIG_BOOTCOMMAND
 	"bootcmd="	CONFIG_BOOTCOMMAND		"\0"
 #endif

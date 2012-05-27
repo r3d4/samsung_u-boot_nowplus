@@ -33,9 +33,11 @@
 #ifndef CONFIG_IDENT_STRING
 #define CONFIG_IDENT_STRING ""
 #endif
-
+/*
 #define U_BOOT_VERSION_STRING U_BOOT_VERSION " (" U_BOOT_DATE " - " \
 	U_BOOT_TIME ")" CONFIG_IDENT_STRING
+*/
+#define U_BOOT_VERSION_STRING U_BOOT_VERSION
 
 #ifndef __ASSEMBLY__
 extern const char version_string[];

@@ -250,8 +250,8 @@ int nowplus_kp_getc(void);
 	"power=gpio input 24\0" \
 	"switchmmc=mmc dev ${mmcnum}\0" \
 	"kernaddr=0x82008000\0" \
-	"initrdaddr=0x85008000\0" \
-	"scriptaddr=0x87008000\0" \
+	"initrdaddr=0x87008000\0" \
+	"scriptaddr=0x86008000\0" \
     "fileload=${mmctype}load mmc ${mmcnum}:${mmcpart} " \
 		"${loadaddr} ${mmcfile}\0" \
 	"kernload=setenv loadaddr ${kernaddr};" \
@@ -310,9 +310,14 @@ int nowplus_kp_getc(void);
    	"mmcboot=echo Booting from mmc ...;" \
         "setenv mmcnum 0;setenv mmcpart 2;setenv mmctype ext2;" \
 		"run trymmcpartboot\0" \
-    "recovboot=echo Booting recovery ...;" \
+    "recoveryboot=echo Booting recovery ...;" \
         "setenv bootargs root=31:1 rootfstype=yaffs2 " \
         "mem=256M init=/init rootwait " \
+        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
+        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
+		"run attachboot\0" \
+    "recoveryboot2=echo Booting recovery ...;" \
+        "setenv bootargs mem=256M " \
         "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
         "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
 		"run attachboot\0" \
@@ -325,8 +330,9 @@ int nowplus_kp_getc(void);
     "menucmd=bootmenu\0" \
 	"bootmenu_0=SD card=run mmcboot\0" \
     "bootmenu_1=Nand=run nandboot\0" \
-	"bootmenu_2=Recovery=run recovboot\0" \
-	"bootmenu_3=U-Boot boot order=boot\0" \
+	"bootmenu_2=Recovery=run recoveryboot\0" \
+    "bootmenu_3=Attached Recovery=run recoveryboot2\0" \
+	"bootmenu_4=U-Boot boot order=boot\0" \
 	"bootmenu_delay=10\0" \
     ""
 
@@ -353,6 +359,9 @@ int nowplus_kp_getc(void);
 	"run mmcboot;" \
 	"echo"
  
+#define CONFIG_RECOVERYCMD      "run recoveryboot"              /* enable boot to recovery */
+#define CONFIG_RECOVERYBOOTCMD  "setenv bootmenu_delay 30"     /* enable boot to recovery */
+
 /*
 #define CONFIG_BOOTCOMMAND \
 	"run attachboot;" \

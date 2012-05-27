@@ -344,7 +344,6 @@ void main_loop (void)
 # ifdef CONFIG_AUTOBOOT_KEYED
 		int prev = disable_ctrlc(1);	/* disable Control C checking */
 # endif
-
 		run_command(p, 0);
 
 # ifdef CONFIG_AUTOBOOT_KEYED
@@ -384,7 +383,24 @@ void main_loop (void)
 	}
 	else
 #endif /* CONFIG_BOOTCOUNT_LIMIT */
-		s = getenv ("bootcmd");
+	{
+#if defined(CONFIG_RECOVERYCMD) || defined(CONFIG_RECOVERYBOOTCMD)
+		switch(bootcmdblk_parse_cmd())
+		{
+		case BOOTCMDBLK_RECOVERY:
+			s = getenv ("recoverycmd");
+			break;
+		case BOOTCMDBLK_BOOTLOADER:
+			s = getenv ("recoverybootcmd");
+			break;
+        default:
+#endif
+			s = getenv ("bootcmd");
+#ifdef CONFIG_RECOVERYCMD
+			break;
+		}
+#endif
+	}
 
 	debug ("### main_loop: bootcmd=\"%s\"\n", s ? s : "<UNDEFINED>");
 
