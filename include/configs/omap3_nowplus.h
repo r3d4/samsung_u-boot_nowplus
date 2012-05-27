@@ -251,9 +251,9 @@ int nowplus_kp_getc(void);
 	"kernaddr=0x82008000\0" \
 	"initrdaddr=0x87008000\0" \
 	"scriptaddr=0x86008000\0" \
-    "bootaddr=0x1860000\0" \
-    "recoveryaddr=0x1360000\0" \
-    "onenandload=onenand read ${kernaddr} ${bootaddr} 0x500000\0" \
+    "mtdbootaddr=0x1860000\0" \
+    "mtdrecoveryaddr=0x1360000\0" \
+    "onenandload=onenand read ${kernaddr} ${mtdaddr} 0x500000\0" \
     "fileload=${mmctype}load mmc ${mmcnum}:${mmcpart} " \
 		"${loadaddr} ${mmcfile}\0" \
 	"kernload=setenv loadaddr ${kernaddr};" \
@@ -286,7 +286,7 @@ int nowplus_kp_getc(void);
 				"run kernboot;" \
 			"fi;" \
 		"fi\0" \
-	"trynandboot=if run onenandload; then " \
+	"tryonenandboot=if run onenandload; then " \
 				"bootm ${kernaddr};" \
 		"fi\0" \
 	"trymmckerninitrdboot=if run switchmmc; then " \
@@ -315,37 +315,29 @@ int nowplus_kp_getc(void);
    	"mmcboot=echo Booting from mmc ...;" \
         "setenv mmcnum 0;setenv mmcpart 2;setenv mmctype ext2;" \
 		"run trymmcpartboot\0" \
-    "recoveryboot=echo Booting recovery ...;" \
-        "setenv bootargs root=31:1 rootfstype=yaffs2 " \
-        "mem=256M init=/init rootwait " \
-        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
-        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
-		"run attachboot\0" \
-    "recoveryboot2=echo Booting recovery ...;" \
+     "onenandboot=echo Booting from internal nand ...;" \
         "setenv bootargs mem=256M " \
         "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
         "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
-		"run attachboot\0" \
-    "nandboot=echo Booting from internal nand ...;" \
-        "setenv bootargs root=31:2 rootfstype=yaffs2 " \
-        "mem=256M init=/init rootwait " \
+        "setenv mtdaddr ${mtdbootaddr};" \
+        "run tryonenandboot;\0" \
+     "recoveryboot=echo Booting from internal nand ...;" \
+        "setenv bootargs mem=256M " \
         "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
         "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
-		"run attachboot\0" \
-     "onenandboot=echo Booting from internal nand ...;" \
-        "setenv bootargs root=31:2 rootfstype=yaffs2 " \
-        "mem=256M init=/init rootwait " \
+        "setenv mtdaddr ${mtdrecoveryaddr};" \
+        "run tryonenandboot;\0" \
+     "rescueboot=echo Booting from internal nand ...;" \
+        "setenv bootargs mem=256M " \
         "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
         "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
-        "onenand info;" \
-        "run trynandboot;\0" \
+        "run attachboot;\0" \
     "menucmd=bootmenu\0" \
 	"bootmenu_0=SD card=run mmcboot\0" \
-    "bootmenu_1=Nand=run nandboot\0" \
+    "bootmenu_1=Nand=run onenandboot\0" \
 	"bootmenu_2=Recovery=run recoveryboot\0" \
-    "bootmenu_3=Attached Recovery=run recoveryboot2\0" \
-    "bootmenu_4=OneNAND=run onenandboot\0" \
-	"bootmenu_5=U-Boot boot order=boot\0" \
+    "bootmenu_3=Rescue Recovery=run rescueboot\0" \
+	"bootmenu_4=U-Boot boot order=boot\0" \
 	"bootmenu_delay=10\0" \
     ""
 
