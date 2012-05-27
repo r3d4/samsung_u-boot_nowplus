@@ -137,7 +137,7 @@
 
 /* OneNand support is disabled, because U-Boot image is too big */
 /* Uncomment next line to enable it */
-/* #define ONENAND_SUPPORT */
+#define ONENAND_SUPPORT
 
 /* commands to include */
 #include <config_cmd_default.h>
@@ -158,9 +158,6 @@
 
 #ifdef ONENAND_SUPPORT
 #define CONFIG_CMD_ONENAND		/* NAND support */
-#define CONFIG_CMD_MTDPARTS		/* mtd parts support */
-#define CONFIG_CMD_UBI			/* UBI Support */
-#define CONFIG_CMD_UBIFS		/* UBIFS Support */
 #endif
 
 #undef CONFIG_CMD_FPGA			/* FPGA configuration Support */
@@ -182,7 +179,9 @@
 #define CONFIG_TWL4030_POWER
 #define CONFIG_TWL4030_LED
 #define CONFIG_TWL4030_KEYPAD
+/*
 
+*/
 /*
  * Board NAND Info.
  */
@@ -195,9 +194,9 @@
 #define CONFIG_RBTREE
 #define CONFIG_LZO
 #define MTDIDS_DEFAULT			"onenand0=onenand"
-#define MTDPARTS_DEFAULT		"mtdparts=onenand:128k(bootloader)," \
-					"384k(config),256k(log),2m(kernel)," \
-					"2m(initfs),-(rootfs)"
+#define MTDPARTS_DEFAULT		"mtdparts=onenand:256k@0x1320000(misc)," \
+					"5m(recovery),5m(boot),164m(system)," \
+					"5m(cache),300m(userdata)"
 #else
 #define MTDPARTS_DEFAULT
 #endif
@@ -252,6 +251,9 @@ int nowplus_kp_getc(void);
 	"kernaddr=0x82008000\0" \
 	"initrdaddr=0x87008000\0" \
 	"scriptaddr=0x86008000\0" \
+    "bootaddr=0x1860000\0" \
+    "recoveryaddr=0x1360000\0" \
+    "onenandload=onenand read ${kernaddr} ${bootaddr} 0x500000\0" \
     "fileload=${mmctype}load mmc ${mmcnum}:${mmcpart} " \
 		"${loadaddr} ${mmcfile}\0" \
 	"kernload=setenv loadaddr ${kernaddr};" \
@@ -283,6 +285,9 @@ int nowplus_kp_getc(void);
 			"if run kernload; then " \
 				"run kernboot;" \
 			"fi;" \
+		"fi\0" \
+	"trynandboot=if run onenandload; then " \
+				"bootm ${kernaddr};" \
 		"fi\0" \
 	"trymmckerninitrdboot=if run switchmmc; then " \
 			"if run initrdload; then " \
@@ -327,12 +332,20 @@ int nowplus_kp_getc(void);
         "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
         "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
 		"run attachboot\0" \
+     "onenandboot=echo Booting from internal nand ...;" \
+        "setenv bootargs root=31:2 rootfstype=yaffs2 " \
+        "mem=256M init=/init rootwait " \
+        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
+        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
+        "onenand info;" \
+        "run trynandboot;\0" \
     "menucmd=bootmenu\0" \
 	"bootmenu_0=SD card=run mmcboot\0" \
     "bootmenu_1=Nand=run nandboot\0" \
 	"bootmenu_2=Recovery=run recoveryboot\0" \
     "bootmenu_3=Attached Recovery=run recoveryboot2\0" \
-	"bootmenu_4=U-Boot boot order=boot\0" \
+    "bootmenu_4=OneNAND=run onenandboot\0" \
+	"bootmenu_5=U-Boot boot order=boot\0" \
 	"bootmenu_delay=10\0" \
     ""
 

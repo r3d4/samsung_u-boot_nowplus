@@ -67,7 +67,7 @@ const omap3_sysinfo sysinfo = {
 int board_init(void)
 {
     /* disabled, already setup by Samung SBL */
-	//gpmc_init();
+	gpmc_init();
 
 	/* board id for Linux */
 	gd->bd->bi_arch_number = MACH_TYPE_OMAP3_NOWPLUS;
