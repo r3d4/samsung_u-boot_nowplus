@@ -227,11 +227,11 @@ int nowplus_kp_init(void);
 int nowplus_kp_tstc(void);
 int nowplus_kp_getc(void);
 #endif
-//disable LCD controller to hide frambuffer garbage 
-// #define DISABLE_LCD             nowplus_lcd_disable()
-// #ifndef __ASSEMBLY__
-// void nowplus_lcd_disable(void);
-// #endif
+/* disable LCD controller to hide frambuffer garbage */
+#define DISABLE_LCD             nowplus_lcd_disable()
+#ifndef __ASSEMBLY__
+void nowplus_lcd_disable(void);
+#endif
 
 /* Environment information */
 #define CONFIG_EXTRA_ENV_SETTINGS \
@@ -333,8 +333,8 @@ int nowplus_kp_getc(void);
         "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
         "run attachboot;\0" \
     "menucmd=bootmenu\0" \
-	"bootmenu_0=SD card=run mmcboot\0" \
-    "bootmenu_1=Nand=run onenandboot\0" \
+    "bootmenu_0=Nand=run onenandboot\0" \
+	"bootmenu_1=SD card=run mmcboot\0" \
 	"bootmenu_2=Recovery=run recoveryboot\0" \
     "bootmenu_3=Rescue Recovery=run rescueboot\0" \
 	"bootmenu_4=U-Boot boot order=boot\0" \
@@ -361,7 +361,7 @@ int nowplus_kp_getc(void);
     "ext2load mmc 0:2 0x84008000 boot/uImage;" \
 */
 #define CONFIG_BOOTCOMMAND \
-	"run mmcboot;" \
+	"run onenandboot;" \
 	"echo"
  
 #define CONFIG_RECOVERYCMD      "run recoveryboot"              /* enable boot to recovery */

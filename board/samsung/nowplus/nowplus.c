@@ -78,12 +78,41 @@ int board_init(void)
 }
 
 void nowplus_lcd_disable(void)
-{
+{  
     u32 memsize = gdev.winSizeX*gdev.winSizeY*gdev.gdfBytesPP;
     memset((void *)gdev.frameAdrs, 0x00, memsize);
 
     //disable graphics pipeline
-    writel(readl(DISPC_GFX_ATTRIBUTES) & ~(0x1), DISPC_GFX_ATTRIBUTES);
+    //writel(readl(DISPC_GFX_ATTRIBUTES) & ~(0x1), DISPC_GFX_ATTRIBUTES);
+#if 0
+    static unsigned int	bus;
+    static unsigned int	cs;
+    static unsigned int	mode;
+    static int   		bitlen;
+    static uchar 		dout[MAX_SPI_BYTES];
+    static uchar 		din[MAX_SPI_BYTES];
+    static struct spi_slave *slave;
+    
+	slave = spi_setup_slave(0, 0, 37500000, mode);
+	if (!slave) {
+		printf("Invalid device %d:%d\n", bus, cs);
+		return 1;
+	}
+    
+	spi_claim_bus(slave);
+    //spi1write(0x14, 0x00);  // set black
+    //spi1write(0x1D, 0xA1);  // standby on
+    if(spi_xfer(slave, bitlen, dout, din,
+				SPI_XFER_BEGIN | SPI_XFER_END) != 0) {
+		printf("Error during SPI transaction\n");
+		rcode = 1;
+	}
+    spi_release_bus(slave);
+	spi_free_slave(slave);
+
+	//Wait 200ms
+	msleep(250);	//mdelay(200);
+#endif
 
 #if 0
      //disable display
@@ -156,7 +185,7 @@ void video_get_info_str(int line_number, char *info)
         sprintf(info, " Samsung Nowplus Board");
         break;
      case 3:
-         sprintf(info, " CPU: TI OMAP rev %d", get_cpu_rev());
+         sprintf(info, " CPU: TI OMAP3430 rev %d", get_cpu_rev());
         break;
      case 4:
         sprintf(info, " Boot mode: %c", bootmode_get_cmd());
@@ -182,9 +211,9 @@ static void twl4030_regulator_set_mode(u8 id, u8 mode)
 	twl4030_i2c_write_u8(TWL4030_CHIP_PM_MASTER, msg & 0xff,
 			TWL4030_PM_MASTER_PB_WORD_LSB);
 }
-#define EN_MMC1         24
-#define CM_ICLKEN1_CORE 0x48004A10
-#define CM_FCLKEN1_CORE 0x48004A00
+// #define EN_MMC1         24
+// #define CM_ICLKEN1_CORE 0x48004A10
+// #define CM_FCLKEN1_CORE 0x48004A00
 /*
  * Routine: misc_init_r
  * Description: Configure board specific parts.
