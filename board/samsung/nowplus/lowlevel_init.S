@@ -21,7 +21,7 @@
  * MA 02111-1307 USA
  */
 
-#define KERNEL_OFFSET 0x40000
+#define KERNEL_OFFSET 0x50000
 #define KERNEL_MAXSIZE 0x500000	/* 5MB */
 
 startaddr:		/* address where should be u-boot after relocation */

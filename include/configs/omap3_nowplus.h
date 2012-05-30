@@ -158,6 +158,7 @@
 
 #ifdef ONENAND_SUPPORT
 #define CONFIG_CMD_ONENAND		/* NAND support */
+/*#define CONFIG_CMD_MTDPARTS */
 #endif
 
 #undef CONFIG_CMD_FPGA			/* FPGA configuration Support */
@@ -194,7 +195,7 @@
 #define CONFIG_RBTREE
 #define CONFIG_LZO
 #define MTDIDS_DEFAULT			"onenand0=onenand"
-#define MTDPARTS_DEFAULT		"mtdparts=onenand:256k@0x1320000(misc)," \
+#define MTDPARTS_DEFAULT		"mtdparts=onenand:384k@0x12C0000(splash),256k(misc)," \
 					"5m(recovery),5m(boot),164m(system)," \
 					"5m(cache),300m(userdata)"
 #else
@@ -217,6 +218,7 @@
 #define CONFIG_CONSOLE_EXTRA_INFO
 // #define CONFIG_VGA_AS_SINGLE_DEVICE
 //#define CONFIG_SPLASH_SCREEN
+#define CONFIG_CMD_BMP
 
 /* functions for cfb_console */
 #define VIDEO_KBD_INIT_FCT		nowplus_kp_init()
@@ -232,6 +234,10 @@ int nowplus_kp_getc(void);
 #ifndef __ASSEMBLY__
 void nowplus_lcd_disable(void);
 #endif
+
+#define DEFAULT_BOOTARG    "mem=256M " \
+        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
+        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\" ${mtdparts}"
 
 /* Environment information */
 #define CONFIG_EXTRA_ENV_SETTINGS \
@@ -250,10 +256,14 @@ void nowplus_lcd_disable(void);
 	"switchmmc=mmc dev ${mmcnum}\0" \
 	"kernaddr=0x82008000\0" \
 	"initrdaddr=0x87008000\0" \
-	"scriptaddr=0x86008000\0" \
+	"scriptaddr=0x88008000\0" \
+    "splashaddr=0x89008000\0" \
+    "mtdsplashaddr=0x12C0000\0" \
     "mtdbootaddr=0x1860000\0" \
     "mtdrecoveryaddr=0x1360000\0" \
     "onenandload=onenand read ${kernaddr} ${mtdaddr} 0x500000\0" \
+    "showsplash=onenand read ${splashaddr} ${mtdsplashaddr} 0x60000;" \
+        "bmp info ${splashaddr};bmp display ${splashaddr}\0" \
     "fileload=${mmctype}load mmc ${mmcnum}:${mmcpart} " \
 		"${loadaddr} ${mmcfile}\0" \
 	"kernload=setenv loadaddr ${kernaddr};" \
@@ -313,24 +323,19 @@ void nowplus_lcd_disable(void);
 	"emmcboot=setenv mmcnum 1; run trymmcboot\0" \
 	"sdboot=setenv mmcnum 0; run trymmcboot\0" \
    	"mmcboot=echo Booting from mmc ...;" \
+        "setenv bootargs " DEFAULT_BOOTARG " root=/dev/mmcblk0p2 rw init=/init rootwait " \
         "setenv mmcnum 0;setenv mmcpart 2;setenv mmctype ext2;" \
 		"run trymmcpartboot\0" \
      "onenandboot=echo Booting from internal nand ...;" \
-        "setenv bootargs mem=256M " \
-        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
-        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
+        "setenv bootargs " DEFAULT_BOOTARG ";" \
         "setenv mtdaddr ${mtdbootaddr};" \
         "run tryonenandboot;\0" \
-     "recoveryboot=echo Booting from internal nand ...;" \
-        "setenv bootargs mem=256M " \
-        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
-        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
+     "recoveryboot=echo Booting recovery ...;" \
+        "setenv bootargs " DEFAULT_BOOTARG ";" \
         "setenv mtdaddr ${mtdrecoveryaddr};" \
         "run tryonenandboot;\0" \
-     "rescueboot=echo Booting from internal nand ...;" \
-        "setenv bootargs mem=256M " \
-        "videoout=omap_vout omap_vout.video1_numbuffers=6 " \
-        "omap_vout.vid1_static_vrfb_alloc=y omapfb.vram=\"0:4M\";" \
+     "rescueboot=echo Booting attached rescue recovery ...;" \
+        "setenv bootargs " DEFAULT_BOOTARG ";" \
         "run attachboot;\0" \
     "menucmd=bootmenu\0" \
     "bootmenu_0=Nand=run onenandboot\0" \
@@ -346,6 +351,8 @@ void nowplus_lcd_disable(void);
 		"setenv mmcscriptfile bootmenu.scr;" \
 		"run trymmcscriptboot;"
 
+
+
 #define CONFIG_PREMONITOR \
 	"echo Extra commands:;" \
 	"echo run sercon - Use serial port for control.;" \
@@ -360,10 +367,11 @@ void nowplus_lcd_disable(void);
     "echo mm devices: ; mmc list; mmc dev;" \
     "ext2load mmc 0:2 0x84008000 boot/uImage;" \
 */
+
 #define CONFIG_BOOTCOMMAND \
 	"run onenandboot;" \
 	"echo"
- 
+
 #define CONFIG_RECOVERYCMD      "run recoveryboot"              /* enable boot to recovery */
 #define CONFIG_RECOVERYBOOTCMD  "setenv bootmenu_delay 30"     /* enable boot to recovery */
 
