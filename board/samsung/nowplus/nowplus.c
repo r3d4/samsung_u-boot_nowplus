@@ -145,7 +145,7 @@ char bootmode_get_cmd()
 {
     u32 tmp = readl( OMAP343X_SCRATCHPAD + 4);
 
-    if((tmp>>24&0xff == 'B') && (tmp>>24&0xff == 'M'))
+    if(((tmp>>24)&0xff == 'B') && ((tmp>>24)&0xff == 'M'))
         return tmp&0xff;
     else
         return 0;
@@ -161,10 +161,22 @@ void *video_hw_init(void)
     u32 fbaddr;
     u32 BytesPP = 4;    // SBL inits to 24bit color packed to 32bit
     u32 memsize = 800*480*BytesPP;
-
+#if 0
       //Get framebuffer addr, set by SBL
     fbaddr = readl( DISPC_GFX_BA0);
+#else
 
+    //fbaddr = 0x80a43000;    // same as linux kernel
+// ugly hack: move to some memory region
+// where fb doesnt get distorted by kernel initlization
+// kernel does own allocation anyways
+    fbaddr = 0x8c800000;
+
+    writel(readl(DISPC_GFX_ATTRIBUTES) & ~(0x1), DISPC_GFX_ATTRIBUTES);
+    writel(fbaddr, DISPC_GFX_BA0);
+    writel(readl(DISPC_GFX_ATTRIBUTES) | (0x1), DISPC_GFX_ATTRIBUTES);
+    writel(readl(DISPC_CONTROL) | (1<<5), DISPC_CONTROL);
+#endif
 	/* fill in Graphic Device */
 	gdev.frameAdrs = fbaddr;
 	gdev.winSizeX = 480;
