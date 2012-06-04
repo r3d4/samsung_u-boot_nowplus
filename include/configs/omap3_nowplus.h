@@ -76,6 +76,7 @@
 #define CONFIG_INITRD_TAG			/* enable passing initrd */
 #define CONFIG_SETUP_MEMORY_TAGS		/* enable memory tag */
 
+#define CONFIG_ANDROID_BOOT_IMAGE   /* enable load of android images */
 /*
  * Size of malloc() pool
  */
