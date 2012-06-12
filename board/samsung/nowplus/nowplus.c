@@ -119,36 +119,18 @@ void nowplus_lcd_disable(void)
     writel(readl(DISPC_CONTROL) & ~0x3, DISPC_CONTROL);
 #endif
 }
-		// u32 l;
 
-		// prcm_offs = OMAP3430_GR_MOD;
-		// l = ('B' << 24) | ('M' << 16) | (cmd ? (u8)*cmd : 0);
-		// /* Reserve the first word in scratchpad for communicating
-		 // * with the boot ROM. A pointer to a data structure
-		 // * describing the boot process can be stored there,
-		 // * cf. OMAP34xx TRM, Initialization / Software Booting
-		 // * Configuration. */
 /* get boot mode store in OMAP343X_SCRATCHPAD by linux kernel
  -> can boot direct to recovery
-
-'r':  reboot mode = recovery
-'f':  reboot mode = fota
-'L':  reboot mode = Lockup
-'U':  reboot mode = Lockup
-'t':  reboot mode = shutdown with TA
-'u':  reboot mode = shutdown with USB
-'j':  reboot mode = shutdown with JIG
-'d':  reboot mode = download
-
  */
 char bootmode_get_cmd()
 {
     u32 tmp = readl( OMAP343X_SCRATCHPAD + 4);
-
-    if(((tmp>>24)&0xff == 'B') && ((tmp>>24)&0xff == 'M'))
+//tmp=0x424d0072;     // = recovery
+    if((((tmp>>24)&0xff) == 'B') && (((tmp>>16)&0xff) == 'M'))
         return tmp&0xff;
     else
-        return 0;
+        return 1;
 }
 
 #ifdef CONFIG_VIDEO
@@ -191,22 +173,34 @@ void *video_hw_init(void)
 void video_get_info_str(int line_number, char *info)
 {
     u32 srev = get_cpu_rev();
+    char bootcmd = bootmode_get_cmd();
+    char *bootmode = "Default";
+
+    switch(bootcmd)
+    {
+        case 'r':
+            bootmode = "Recovery";
+            break;
+        case 'b':
+            bootmode = "Bootloader";
+            break;
+    }
 
     switch (line_number) {
-    case 2:
-        sprintf(info, " Samsung Nowplus Board");
-        break;
-     case 3:
-         sprintf(info, " CPU: TI OMAP3430 rev %d", get_cpu_rev());
-        break;
-     case 4:
-        sprintf(info, " Boot mode: %c", bootmode_get_cmd());
-        break;
-     case 6:
-        sprintf(info, " 2012 - r3d4 edition");
-        break;
-     default:
-        info[0] = 0;
+        case 2:
+            sprintf(info, " Samsung Nowplus Board");
+            break;
+         case 3:
+             sprintf(info, " CPU: TI OMAP3430 rev %d", get_cpu_rev());
+            break;
+         case 4:
+            sprintf(info, " Boot mode: %s", bootmode);
+            break;
+        case 6:
+            sprintf(info, " 2012 - r3d4 edition");
+            break;
+         default:
+            info[0] = 0;
     }
 }
 #endif

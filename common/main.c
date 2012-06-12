@@ -39,6 +39,7 @@
 #include <hush.h>
 #endif
 
+#include <bootcmdblk.h>
 #include <post.h>
 #include <linux/ctype.h>
 #include <menu.h>
@@ -303,7 +304,9 @@ void main_loop (void)
 	char *bcs;
 	char bcs_set[16];
 #endif /* CONFIG_BOOTCOUNT_LIMIT */
-
+#if defined(CONFIG_RECOVERYCMD) || defined(CONFIG_RECOVERYBOOTCMD)
+    char bootreason;
+#endif
 #ifdef CONFIG_BOOTCOUNT_LIMIT
 	bootcount = bootcount_load();
 	bootcount++;
@@ -351,7 +354,6 @@ void main_loop (void)
 # endif
 	}
 #endif /* CONFIG_PREBOOT */
-
 #if defined(CONFIG_UPDATE_TFTP)
 	update_tftp (0UL);
 #endif /* CONFIG_UPDATE_TFTP */
@@ -384,22 +386,7 @@ void main_loop (void)
 	else
 #endif /* CONFIG_BOOTCOUNT_LIMIT */
 	{
-#if defined(CONFIG_RECOVERYCMD) || defined(CONFIG_RECOVERYBOOTCMD)
-		switch(bootcmdblk_parse_cmd())
-		{
-		case BOOTCMDBLK_RECOVERY:
-			s = getenv ("recoverycmd");
-			break;
-		case BOOTCMDBLK_BOOTLOADER:
-			s = getenv ("recoverybootcmd");
-			break;
-        default:
-#endif
 			s = getenv ("bootcmd");
-#ifdef CONFIG_RECOVERYCMD
-			break;
-		}
-#endif
 	}
 
 	debug ("### main_loop: bootcmd=\"%s\"\n", s ? s : "<UNDEFINED>");
@@ -417,7 +404,15 @@ void main_loop (void)
 	}
 
 #endif /* CONFIG_BOOTDELAY */
-
+#if defined(CONFIG_RECOVERYCMD) || defined(CONFIG_RECOVERYBOOTCMD)
+    bootreason = bootcmdblk_parse_cmd();
+    if(bootreason == BOOTCMDBLK_RECOVERY)
+    {
+        s = getenv ("recoverycmd");
+        if (s)
+            run_command(s, 0);
+    }
+#endif
 #ifdef CONFIG_MENUCMD
 	if (menucmd == 1) {
 		s = getenv("menucmd");
