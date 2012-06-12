@@ -262,6 +262,11 @@ void nowplus_lcd_disable(void);
     "mtdsplashaddr=0x12C0000\0" \
     "mtdbootaddr=0x1860000\0" \
     "mtdrecoveryaddr=0x1360000\0" \
+    "magic_keys=01\0" \
+    "key_magic0=sP\0" \
+    "key_cmd0=run recoveryboot\0" \
+    "key_magic1=cP\0" \
+    "key_cmd1=setenv bootmenu_delay 30\0" \
     "onenandload=onenand read ${kernaddr} ${mtdaddr} 0x500000\0" \
     "showsplash=onenand read ${splashaddr} ${mtdsplashaddr} 0x60000;" \
         "bmp info ${splashaddr};bmp display ${splashaddr}\0" \

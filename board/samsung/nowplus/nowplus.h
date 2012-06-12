@@ -37,11 +37,12 @@ extern u32 nowplus_kernaddr; /* attached kernel address */
 #define OMAP343X_SCRATCHPAD		0x48002910
 
 #define GPIO150				    (0x1 << 22)
+#define GPIO_POWER_KEY          24
 
 #define KEY_FRONT               0
 #define KEY_PHONE               '\r'
 #define KEY_EXIT                '\e'
-#define KEY_SEARCH              0
+#define KEY_SEARCH              1
 #define KEY_VOLUMEUP            0
 #define KEY_CAMERA_FOCUS        0
 #define KEY_CAMERA              0
@@ -72,8 +73,8 @@ extern u32 nowplus_kernaddr; /* attached kernel address */
 	MUX_VAL(CP(MMC1_DAT5),		(IEN  | PTD | EN  | M7)) \
 	MUX_VAL(CP(MMC1_DAT6),		(IEN  | PTD | EN  | M7)) \
 	MUX_VAL(CP(MMC1_DAT7),		(IEN  | PTD | EN  | M7)) \
-	MUX_VAL(CP(UART1_CTS),		(IEN  | PTD | EN  | M4))        //gpio 150
-
+	MUX_VAL(CP(UART1_CTS),		(IEN  | PTD | EN  | M4)) \
+	MUX_VAL(CP(ETK_D10_ES2),	(IEN  | PTD | EN  | M4))
 
 #define MUX_NOWPLUS_ALL() \
 	MUX_VAL(CP(SDRC_D0),		(IEN | PTD | DIS | M0)) \

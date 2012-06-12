@@ -44,11 +44,12 @@
 #include <asm/mach-types.h>
 #include <asm/arch/mux.h>
 #include <asm/arch/sys_proto.h>
-#include <asm/arch/gpio.h>
 #include <asm/arch/mmc_host_def.h>
+#include <asm/gpio.h>
 
 #include "nowplus.h"
 
+static void preboot_keys(void);
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -123,7 +124,7 @@ void nowplus_lcd_disable(void)
 /* get boot mode store in OMAP343X_SCRATCHPAD by linux kernel
  -> can boot direct to recovery
  */
-char bootmode_get_cmd()
+char bootmode_get_cmd(void)
 {
     u32 tmp = readl( OMAP343X_SCRATCHPAD + 4);
 //tmp=0x424d0072;     // = recovery
@@ -172,7 +173,6 @@ void *video_hw_init(void)
 #ifdef CONFIG_CONSOLE_EXTRA_INFO
 void video_get_info_str(int line_number, char *info)
 {
-    u32 srev = get_cpu_rev();
     char bootcmd = bootmode_get_cmd();
     char *bootmode = "Default";
 
@@ -226,14 +226,12 @@ static void twl4030_regulator_set_mode(u8 id, u8 mode)
  */
 int misc_init_r(void)
 {
-
-	struct gpio *gpio5_base = (struct gpio *)OMAP34XX_GPIO5_BASE;
-	struct control_prog_io *prog_io_base = (struct control_prog_io *)OMAP34XX_CTRL_BASE;
-
 	char buf[12];
-	u8 state;
-    u32 oe;
-    u32 dat;
+	// struct gpio *gpio5_base = (struct gpio *)OMAP34XX_GPIO5_BASE;
+	// struct control_prog_io *prog_io_base = (struct control_prog_io *)OMAP34XX_CTRL_BASE;
+	// u8 state;
+    // u32 oe;
+    // u32 dat;
 
     /*enable MMC CLKs */
     // writel(readl(CM_ICLKEN1_CORE) |(1<<EN_MMC1), CM_ICLKEN1_CORE);  // enable interface clk
@@ -253,7 +251,9 @@ int misc_init_r(void)
 	setenv("nowplus_kernaddr", buf);
 
 	dieid_num_r();
-
+#ifdef CONFIG_PREBOOT
+	preboot_keys();
+#endif
 	return 0;
 }
 
@@ -317,6 +317,12 @@ static const char keymap[] = {
    KEY_CAMERA_FOCUS,    KEY_CAMERA,     KEY_VOLUMEDOWN
 };
 
+// button map for 'key_magic0='
+static const char buttons[] =
+{ 'h', 'p', 'e',
+  's', '.', '+',
+  'f', 'c', '-' };
+
 static u8 keys[8];
 static u8 old_keys[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 #define KEYBUF_SIZE 32
@@ -379,10 +385,11 @@ static void nowplus_kp_fill(u8 k)
  * Routine: nowplus_kp_tstc
  * Description: Test if key was pressed (from buffer).
  */
-int nowplus_kp_tstc(void)
+int __nowplus_kp_tstc(char *buf)
 {
 	u8 c, r, dk, i;
 	u8 intr;
+    int numpressed = 0;
 
 	/* localy lock twl4030 i2c bus */
 	if (test_and_set_bit(0, &twl_i2c_lock))
@@ -390,42 +397,47 @@ int nowplus_kp_tstc(void)
 
 	/* twl4030 remembers up to 2 events */
 	for (i = 0; i < 2; i++) {
-
 		/* check interrupt register for events */
 		twl4030_i2c_read_u8(TWL4030_CHIP_KEYPAD, &intr,
 				TWL4030_KEYPAD_KEYP_ISR1+(2*i));
 
 		if (intr&1) { /* got an event */
-
 			/* read the key state */
 			i2c_read(TWL4030_CHIP_KEYPAD,
 				TWL4030_KEYPAD_FULL_CODE_7_0, 1, keys, 8);
 
 			for (c = 0; c < 3; c++) {
-
 				/* get newly pressed keys only */
 				dk = ((keys[c] ^ old_keys[c])&keys[c]);
 				old_keys[c] = keys[c];
 
 				/* fill the keybuf */
 				for (r = 0; r < 3; r++) {
-					if (dk&1)
-						nowplus_kp_fill((c*3)+r);
+					if (dk&1) {
+                        if(buf) // use simple keys for 'key_magic0='
+                            buf[numpressed++] = buttons[(c*3)+r];
+                        else
+                            nowplus_kp_fill((c*3)+r);
+                    }
 					dk = dk >> 1;
 				}
-
 			}
-
 		}
-
 	}
 
 	/* localy unlock twl4030 i2c bus */
 	test_and_clear_bit(0, &twl_i2c_lock);
 
-	return (KEYBUF_SIZE + keybuf_tail - keybuf_head)%KEYBUF_SIZE;
+    if(buf)
+        return numpressed;
+    else
+        return (KEYBUF_SIZE + keybuf_tail - keybuf_head)%KEYBUF_SIZE;
 }
 
+int nowplus_kp_tstc(void)
+{
+    return __nowplus_kp_tstc(NULL);
+}
 /*
  * Routine: nowplus_kp_getc
  * Description: Get last pressed key (from buffer).
@@ -439,6 +451,64 @@ int nowplus_kp_getc(void)
 	}
 	return keybuf[keybuf_head++];
 }
+
+
+static int nowplus_get_bootkeys(char *buf)
+{
+    int numpressed = __nowplus_kp_tstc(buf);
+
+    // add power key as last key if pressed
+    if (gpio_request(GPIO_POWER_KEY, "power_   	key") == 0) {
+        gpio_direction_input(GPIO_POWER_KEY);
+        if(gpio_get_value(GPIO_POWER_KEY))
+            buf[numpressed++] = 'P';
+        gpio_free(GPIO_POWER_KEY);
+    }
+    buf[numpressed] = '\0';
+    return numpressed;
+}
+
+#ifdef CONFIG_PREBOOT
+static char const kbd_magic_prefix[] = "key_magic";
+static char const kbd_command_prefix[] = "key_cmd";
+
+void preboot_keys(void)
+{
+    int numpressed;
+    int powerkey = 0;
+	char keypress[2*ARRAY_SIZE(buttons)+2];
+
+	numpressed = nowplus_get_bootkeys(keypress);
+	if (numpressed) {
+		char *kbd_magic_keys = getenv("magic_keys");
+		char *suffix;
+		/*
+		 * loop over all magic keys
+		 */
+		for (suffix = kbd_magic_keys; *suffix; ++suffix) {
+            char *keys;
+			char magic[sizeof(kbd_magic_prefix) + 1];
+			sprintf(magic, "%s%c", kbd_magic_prefix, *suffix);
+			keys = getenv(magic);
+			if (keys) {
+				if (!strcmp(keys, keypress))
+					break;
+			}
+		}
+		if (*suffix) {
+			char cmd_name[sizeof(kbd_command_prefix) + 1];
+			char *cmd;
+			sprintf(cmd_name, "%s%c", kbd_command_prefix, *suffix);
+			cmd = getenv(cmd_name);
+			if (cmd) {
+				setenv("preboot", cmd);
+				return;
+			}
+		}
+	}
+}
+#endif
+
 
 /*
  * Routine: board_mmc_init
